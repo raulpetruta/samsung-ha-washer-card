@@ -768,11 +768,9 @@ class SamsungWasherCard extends HTMLElement {
     }
 
     isRecentlyCompleted(hass) {
-      // Get the configured hours (default to 2 hours)
       const completeStatusHours = this.config.complete_status_for_x_hours || 2;
       
       try {
-        // Get the raw completion time directly from hass
         const completionTimeRaw = this.getEntityValue(hass, `sensor.${this.config.device_name || 'washing_machine'}_completion_time`, '');
         if (!completionTimeRaw || completionTimeRaw === 'Unknown' || completionTimeRaw === 'unavailable') {
           return false;
@@ -783,15 +781,12 @@ class SamsungWasherCard extends HTMLElement {
         const diffMs = now.getTime() - completionDate.getTime();
         const diffHours = diffMs / (1000 * 60 * 60);
         
-        // If completion was in the past and within the configured hours, show as completed
         return diffMs > 0 && diffHours <= completeStatusHours;
       } catch (error) {
         return false;
       }
     }
   
-    // The user supplied configuration. Throw an exception and Home Assistant
-    // will render an error card.
     setConfig(config) {
       if (!config.entity_prefix && !config.device_name) {
         throw new Error("You need to define either entity_prefix or device_name");
@@ -799,13 +794,10 @@ class SamsungWasherCard extends HTMLElement {
       this.config = config;
     }
   
-    // The height of your card. Home Assistant uses this to automatically
-    // distribute all cards over the available columns in masonry view
     getCardSize() {
       return 8;
     }
   
-    // The rules for sizing your card in the grid in sections view
     getGridOptions() {
       return {
         rows: 8,
@@ -817,7 +809,6 @@ class SamsungWasherCard extends HTMLElement {
   }
   
   customElements.define("samsung-washer-card", SamsungWasherCard);
-  // Register the card with Home Assistant
   window.customCards = window.customCards || [];
   window.customCards.push({
     type: "samsung-washer-card",
