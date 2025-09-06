@@ -57,10 +57,10 @@ resources:
 ### Get the device_name
 
 Under Controls, click on the first option
-! (screenshots/setup-1.png)
+![Get device_name step 1](screenshots/setup-1.png)
 
 Your device_name will be setup.X
-! (screenshots/setup-2.png)
+![Get device_name step 2](screenshots/setup-2.png)
 
 ### Basic Configuration
 
