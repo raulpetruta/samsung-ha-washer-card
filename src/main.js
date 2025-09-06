@@ -143,7 +143,7 @@ class SamsungWasherCard extends HTMLElement {
   // Return the stub configuration for the card
   static getStubConfig() {
     return {
-      device_name: "select.washing_machine",
+      device_name: "washing_machine",
       icon: "🧺",
       complete_status_for_x_hours: 2,
       grid_columns: 12,

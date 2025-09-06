@@ -67,7 +67,7 @@ The card now includes a visual configuration editor! Simply:
 Under Controls, click on the first option
 ![Get device_name step 1](screenshots/setup-1.png)
 
-Your device_name will be setup.X
+Your device_name will be "X" (what's after the "select.")
 ![Get device_name step 2](screenshots/setup-2.png)
 
 ### Manual Configuration
@@ -76,14 +76,14 @@ Your device_name will be setup.X
 
 ```yaml
 type: custom:samsung-washer-card
-device_name: select.washing_machine  # Replace with your device name
+device_name: washing_machine  # Replace with your device name
 ```
 
 #### Full Configuration
 
 ```yaml
 type: custom:samsung-washer-card
-device_name: select.washing_machine
+device_name: washing_machine
 icon: "mdi:washing-machine"  # Custom icon (emoji or MDI)
 complete_status_for_x_hours: 2  # Hours to show "completed" status
 grid_columns: 12  # Full width (1-12)
@@ -130,7 +130,7 @@ The card automatically detects these entity types for your device:
 
 ```yaml
 type: custom:samsung-washer-card
-device_name: select.washing_machine
+device_name: washing_machine
 icon: "mdi:washing-machine"
 ```
 
@@ -139,12 +139,12 @@ icon: "mdi:washing-machine"
 ```yaml
 # Kitchen Washer
 type: custom:samsung-washer-card
-device_name: select.washing_machine kitchen_washer
+device_name: washing_machine
 icon: "🏠"
 
 # Laundry Room Washer  
 type: custom:samsung-washer-card
-device_name: select.washing_machine main_washer
+device_name: washing_machine
 icon: "mdi:tumble-dryer"
 ```
 
