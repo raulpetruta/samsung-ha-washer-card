@@ -1,13 +1,13 @@
 // Samsung Washer Card - Main entry point
 // Imports
-import { baseStyles } from './src/styles/base.js';
-import { animationStyles } from './src/styles/animations.js';
-import { responsiveStyles } from './src/styles/responsive.js';
-import { createWashingMachine } from './src/components/washing-machine.js';
-import { createSensorsGrid } from './src/components/sensors-grid.js';
-import { createControlsSection } from './src/components/controls-section.js';
-import { EntityHelpers } from './src/utils/entity-helpers.js';
-import { Formatters } from './src/utils/formatters.js';
+import { baseStyles } from './styles/base.js';
+import { animationStyles } from './styles/animations.js';
+import { responsiveStyles } from './styles/responsive.js';
+import { createWashingMachine } from './components/washing-machine.js';
+import { createSensorsGrid } from './components/sensors-grid.js';
+import { createControlsSection } from './components/controls-section.js';
+import { EntityHelpers } from './utils/entity-helpers.js';
+import { Formatters } from './utils/formatters.js';
 
 class SamsungWasherCard extends HTMLElement {
   set hass(hass) {

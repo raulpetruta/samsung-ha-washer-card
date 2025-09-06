@@ -142,6 +142,26 @@ icon: "mdi:tumble-dryer"
 ### Dark Mode
 ![Dark Mode](screenshots/dark-mode.png)
 
+## Development
+
+The project has a clean, modular structure:
+
+```text
+src/
+├── main.js              # Main card class
+├── components/          # UI components
+├── styles/              # CSS styles
+└── utils/               # Helper utilities
+```
+
+### Building for Distribution
+
+```bash
+npm run build    # Creates samsung-washer-card.js for HACS
+npm run dev      # Development build
+npm run clean    # Clean build files
+```
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
@@ -153,6 +173,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 If you find this card useful, consider:
+
 - ⭐ Starring this repository
 - 🐛 Reporting issues
 - 💡 Suggesting new features

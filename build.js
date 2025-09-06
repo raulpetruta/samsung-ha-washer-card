@@ -29,7 +29,7 @@ const formatters = readModule('src/utils/formatters.js');
 
 // Read the main class file and remove imports
 console.log('🔧 Processing main class...');
-const mainContent = fs.readFileSync('samsung-washer-card-modular.js', 'utf8')
+const mainContent = fs.readFileSync('src/main.js', 'utf8')
   .replace(/\/\/ Samsung Washer Card[\s\S]*?\/\/ Imports\s*/g, '')
   .replace(/import\s+{[^}]+}\s+from\s+['"][^'"]+['"];\s*/g, '')
   .trim();
