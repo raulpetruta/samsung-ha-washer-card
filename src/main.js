@@ -122,7 +122,7 @@ class SamsungWasherCard extends HTMLElement {
   // The height of your card. Home Assistant uses this to automatically
   // distribute all cards over the available columns in masonry view
   getCardSize() {
-    return 8;
+    return 12;
   }
 
   // The rules for sizing your card in the grid in sections view
@@ -130,7 +130,7 @@ class SamsungWasherCard extends HTMLElement {
     return {
       rows: 12,
       columns: 8,
-      min_rows: 8,
+      min_rows: 12,
       max_rows: 12,
     };
   }
