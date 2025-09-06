@@ -824,5 +824,5 @@ class SamsungWasherCard extends HTMLElement {
     name: "Samsung Washer Card",
     preview: true,
     description: "A modern card for Samsung washing machines with SmartThings integration",
-    documentationURL: "https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card",
+    documentationURL: "https://github.com/raulpetruta/samsung-ha-washer-card",
   });

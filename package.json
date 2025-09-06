@@ -19,16 +19,16 @@
     "smartthings",
     "hacs"
   ],
-  "author": "Your Name <your.email@example.com>",
+  "author": "Raul Carlos Petru Petruța <petruta.raul98@icloud.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/samsung-washer-card.git"
+    "url": "https://github.com/raulpetruta/samsung-ha-washer-card"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/samsung-washer-card/issues"
+    "url": "https://github.com/raulpetruta/samsung-ha-washer-card/issues"
   },
-  "homepage": "https://github.com/yourusername/samsung-washer-card#readme",
+  "homepage": "https://github.com/raulpetruta/samsung-ha-washer-card#readme",
   "devDependencies": {
     "eslint": "^8.0.0",
     "prettier": "^2.0.0"
