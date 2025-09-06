@@ -129,7 +129,7 @@ class SamsungWasherCard extends HTMLElement {
   getGridOptions() {
     return {
       rows: 12,
-      columns: 8,
+      columns: 12,
       min_rows: 12,
       max_rows: 12,
     };
