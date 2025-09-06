@@ -935,10 +935,10 @@ class SamsungWasherCard extends HTMLElement {
   // The rules for sizing your card in the grid in sections view
   getGridOptions() {
     return {
-      rows: 8,
+      rows: 12,
       columns: 8,
-      min_rows: 4,
-      max_rows: 8,
+      min_rows: 8,
+      max_rows: 12,
     };
   }
 }
