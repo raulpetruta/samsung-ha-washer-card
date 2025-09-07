@@ -263,65 +263,6 @@ class SamsungWasherCardEditor extends HTMLElement {
           </div>
           <div class="config-help">Hours to show green "completed" status after washing is done</div>
         </div>
-
-        <div class="config-section">
-          <div class="config-section-title">Grid Layout Options</div>
-          
-          <div class="config-row">
-            <label class="config-label">Grid Columns:</label>
-            <input
-              type="number"
-              class="config-input"
-              .value="12"
-              @input="${this._valueChanged}"
-              min="1"
-              max="12"
-            />
-          </div>
-          <div class="config-help">Number of columns the card should span (1-12, default: 12 for full width)</div>
-
-          <div class="config-row">
-            <label class="config-label">Grid Rows:</label>
-            <input
-              type="number"
-              class="config-input"
-              .value="${this.config.grid_rows || 12}"
-              @input="${this._valueChanged}"
-              data-config-key="grid_rows"
-              min="8"
-              max="24"
-            />
-          </div>
-          <div class="config-help">Number of rows the card should span (8-24, default: 12)</div>
-
-          <div class="config-row">
-            <label class="config-label">Minimum Rows:</label>
-            <input
-              type="number"
-              class="config-input"
-              .value="${this.config.min_rows || 8}"
-              @input="${this._valueChanged}"
-              data-config-key="min_rows"
-              min="4"
-              max="20"
-            />
-          </div>
-          <div class="config-help">Minimum number of rows (4-20, default: 8)</div>
-
-          <div class="config-row">
-            <label class="config-label">Maximum Rows:</label>
-            <input
-              type="number"
-              class="config-input"
-              .value="${this.config.max_rows || 20}"
-              @input="${this._valueChanged}"
-              data-config-key="max_rows"
-              min="12"
-              max="30"
-            />
-          </div>
-          <div class="config-help">Maximum number of rows (12-30, default: 20)</div>
-        </div>
       </div>
     `;
   }
