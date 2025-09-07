@@ -1194,10 +1194,6 @@ class SamsungWasherCard extends HTMLElement {
       dryer: false,
       icon: "🧺",
       complete_status_for_x_hours: 2,
-      grid_columns: 12,
-      grid_rows: 12,
-      min_rows: 8,
-      max_rows: 20
     };
   }
 }
@@ -1320,7 +1316,6 @@ class SamsungWasherCardEditor extends HTMLElement {
               class="config-input"
               .value="12"
               @input="${this._valueChanged}"
-              data-config-key="grid_columns"
               min="1"
               max="12"
             />

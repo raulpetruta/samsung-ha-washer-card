@@ -103,10 +103,6 @@ device_name: washing_machine  # or "dryer" for dryers
 dryer: false  # Set to true for dryers
 icon: "mdi:washing-machine"  # Custom icon (emoji or MDI)
 complete_status_for_x_hours: 2  # Hours to show "completed" status
-grid_columns: 12  # Full width (1-12)
-grid_rows: 12     # Card height
-min_rows: 8       # Minimum height
-max_rows: 20      # Maximum height
 ```
 
 ## Configuration Options
