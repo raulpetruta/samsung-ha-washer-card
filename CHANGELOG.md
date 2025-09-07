@@ -5,9 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-09-07
+
+### Fixed
+
+- Updated repository URL in distribution files
+- Fixed device_name configuration in README and JavaScript files
+- Improved build process with correct timestamps
+
+### Changed
+
+- Updated documentation for better clarity on device configuration
+
 ## [1.0.0] - 2025-08-28
 
 ### Added
+
 - Initial release of Samsung Washer Card
 - Animated washing machine with spinning drum and water effects
 - Real-time status monitoring with color-coded indicators
@@ -19,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - HACS compatibility
 
 ### Features
+
 - **Visual Design**: Modern appliance-inspired color scheme
 - **Animations**: Spinning drum when running, bubbling water effects
 - **Sensors**: Energy, water consumption, completion time, job state
@@ -27,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Responsive**: Works on desktop, tablet, and mobile devices
 
 ### Supported Entities
+
 - Machine state and job state sensors
 - Energy consumption and savings tracking
 - Water consumption monitoring

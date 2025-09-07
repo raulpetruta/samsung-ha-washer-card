@@ -1,6 +1,6 @@
 {
   "name": "samsung-washer-card",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A beautiful, animated Home Assistant card for Samsung washing machines with SmartThings integration",
   "main": "src/main.js",
   "scripts": {
