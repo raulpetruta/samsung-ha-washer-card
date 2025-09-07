@@ -25,25 +25,46 @@ export class EntityHelpers {
     return 'Off';
   }
 
-  static getAllSensorData(hass, deviceName) {
-    return {
-      machineState: this.getEntityValue(hass, `sensor.${deviceName}_machine_state`, 'Unknown'),
-      jobState: this.getEntityValue(hass, `sensor.${deviceName}_job_state`, 'None'),
-      completionTime: this.getEntityValue(hass, `sensor.${deviceName}_completion_time`, 'Unknown'),
-      energy: this.getEntityValue(hass, `sensor.${deviceName}_energy`, '0'),
-      energyDiff: this.getEntityValue(hass, `sensor.${deviceName}_energy_difference`, '0'),
-      energySaved: this.getEntityValue(hass, `sensor.${deviceName}_energy_saved`, '0'),
-      power: this.getEntityValue(hass, `sensor.${deviceName}_power`, '0'),
-      powerEnergy: this.getEntityValue(hass, `sensor.${deviceName}_power_energy`, '0'),
-      waterConsumption: this.getEntityValue(hass, `sensor.${deviceName}_water_consumption`, '0'),
-      childLock: this.getBinaryState(hass, `binary_sensor.${deviceName}_child_lock`),
-      remoteControl: this.getBinaryState(hass, `binary_sensor.${deviceName}_remote_control`),
-      powerBinary: this.getBinaryState(hass, `binary_sensor.${deviceName}_power`),
-      bubbleSoak: this.getSwitchState(hass, `switch.${deviceName}_bubble_soak`),
-      detergentAmount: this.getEntityValue(hass, `select.${deviceName}_detergent_dispense_amount`, 'Extra'),
-      rinseCycles: this.getEntityValue(hass, `number.${deviceName}_rinse_cycles`, '2'),
-      spinLevel: this.getEntityValue(hass, `select.${deviceName}_spin_level`, '1400'),
-      washerSelect: this.getEntityValue(hass, `select.${deviceName}`, 'Unknown')
-    };
+  static getAllSensorData(hass, deviceName, isDryer = false) {
+    if (isDryer) {
+      return {
+        machineState: this.getEntityValue(hass, `sensor.${deviceName}_machine_state`, 'Unknown'),
+        jobState: this.getEntityValue(hass, `sensor.${deviceName}_job_state`, 'None'),
+        completionTime: this.getEntityValue(hass, `sensor.${deviceName}_completion_time`, 'Unknown'),
+        power: this.getEntityValue(hass, `sensor.${deviceName}_power`, '0'),
+        remoteControl: this.getBinaryState(hass, `binary_sensor.${deviceName}_remote_control`),
+        powerBinary: this.getBinaryState(hass, `binary_sensor.${deviceName}_power`),
+        dryerSelect: this.getEntityValue(hass, `select.${deviceName}`, 'Unknown'),
+        // Dryer-specific sensors (if available)
+        energy: this.getEntityValue(hass, `sensor.${deviceName}_energy`, '0'),
+        energySaved: this.getEntityValue(hass, `sensor.${deviceName}_energy_saved`, '0'),
+        waterConsumption: '0', // Dryers don't use water
+        childLock: this.getBinaryState(hass, `binary_sensor.${deviceName}_child_lock`),
+        bubbleSoak: 'Off', // Not applicable for dryers
+        detergentAmount: 'N/A', // Not applicable for dryers
+        rinseCycles: 'N/A', // Not applicable for dryers
+        spinLevel: 'N/A' // Not applicable for dryers
+      };
+    } else {
+      return {
+        machineState: this.getEntityValue(hass, `sensor.${deviceName}_machine_state`, 'Unknown'),
+        jobState: this.getEntityValue(hass, `sensor.${deviceName}_job_state`, 'None'),
+        completionTime: this.getEntityValue(hass, `sensor.${deviceName}_completion_time`, 'Unknown'),
+        energy: this.getEntityValue(hass, `sensor.${deviceName}_energy`, '0'),
+        energyDiff: this.getEntityValue(hass, `sensor.${deviceName}_energy_difference`, '0'),
+        energySaved: this.getEntityValue(hass, `sensor.${deviceName}_energy_saved`, '0'),
+        power: this.getEntityValue(hass, `sensor.${deviceName}_power`, '0'),
+        powerEnergy: this.getEntityValue(hass, `sensor.${deviceName}_power_energy`, '0'),
+        waterConsumption: this.getEntityValue(hass, `sensor.${deviceName}_water_consumption`, '0'),
+        childLock: this.getBinaryState(hass, `binary_sensor.${deviceName}_child_lock`),
+        remoteControl: this.getBinaryState(hass, `binary_sensor.${deviceName}_remote_control`),
+        powerBinary: this.getBinaryState(hass, `binary_sensor.${deviceName}_power`),
+        bubbleSoak: this.getSwitchState(hass, `switch.${deviceName}_bubble_soak`),
+        detergentAmount: this.getEntityValue(hass, `select.${deviceName}_detergent_dispense_amount`, 'Extra'),
+        rinseCycles: this.getEntityValue(hass, `number.${deviceName}_rinse_cycles`, '2'),
+        spinLevel: this.getEntityValue(hass, `select.${deviceName}_spin_level`, '1400'),
+        washerSelect: this.getEntityValue(hass, `select.${deviceName}`, 'Unknown')
+      };
+    }
   }
 }

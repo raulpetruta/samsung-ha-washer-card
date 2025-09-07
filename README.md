@@ -1,9 +1,9 @@
-# Samsung Washer Card
+# Samsung Washer & Dryer Card
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/raulpetruta/samsung-ha-washer-card)](https://github.com/raulpetruta/samsung-ha-washer-card)
 
-A beautiful, animated Home Assistant card for Samsung washing machines with SmartThings integration.
+A beautiful, animated Home Assistant card for Samsung washing machines and dryers with SmartThings integration.
 
 ## Features
 
@@ -12,8 +12,15 @@ A beautiful, animated Home Assistant card for Samsung washing machines with Smar
 - Automatic light/dark mode support
 - Smooth animations and hover effects
 
-🔄 **Animated Washing Machine**
-- Color-coded status light (Aqua/Green/Amber)
+🔄 **Animated Appliances**
+- Animated washing machine with spinning drum and water effects
+- Animated dryer with tumbling action and heat indicator
+- Color-coded status lights (Aqua/Green/Amber for washers, Orange for dryers)
+
+🏠 **Dual Device Support**
+- Samsung washing machines with SmartThings integration
+- Samsung dryers with SmartThings integration
+- Easy switching between device types via configuration
 
 📊 **Rich Information Display**
 - Energy consumption and water usage
@@ -74,16 +81,26 @@ Your device_name will be "X" (what's after the "select.")
 
 #### Basic Configuration
 
+**For Washing Machine:**
 ```yaml
 type: custom:samsung-washer-card
 device_name: washing_machine  # Replace with your device name
+dryer: false  # Set to true for dryers
+```
+
+**For Dryer:**
+```yaml
+type: custom:samsung-washer-card
+device_name: dryer  # Replace with your device name
+dryer: true  # Set to true for dryers
 ```
 
 #### Full Configuration
 
 ```yaml
 type: custom:samsung-washer-card
-device_name: washing_machine
+device_name: washing_machine  # or "dryer" for dryers
+dryer: false  # Set to true for dryers
 icon: "mdi:washing-machine"  # Custom icon (emoji or MDI)
 complete_status_for_x_hours: 2  # Hours to show "completed" status
 grid_columns: 12  # Full width (1-12)
@@ -96,15 +113,19 @@ max_rows: 20      # Maximum height
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `device_name` | string | **Required** | Name of your Samsung washer device |
-| `icon` | string | `🧺` | Icon for the card header (emoji or `mdi:icon-name`) |
+| `device_name` | string | **Required** | Name of your Samsung washer/dryer device |
+| `dryer` | boolean | `false` | Set to `true` for dryers, `false` for washers |
+| `icon` | string | `🧺` (washer) / `🌪️` (dryer) | Icon for the card header (emoji or `mdi:icon-name`) |
 | `complete_status_for_x_hours` | number | `2` | Hours to show green "completed" status light |
 
 ## Supported Entities
 
-The card automatically detects these entity types for your device:
+The card automatically detects different entity types based on device mode:
 
-### Sensors
+### For Washing Machines (`dryer: false`)
+
+**Sensors:**
+
 - `sensor.{device_name}_machine_state`
 - `sensor.{device_name}_job_state`
 - `sensor.{device_name}_completion_time`
@@ -113,39 +134,75 @@ The card automatically detects these entity types for your device:
 - `sensor.{device_name}_power`
 - `sensor.{device_name}_water_consumption`
 
-### Binary Sensors
+**Binary Sensors:**
+
 - `binary_sensor.{device_name}_child_lock`
 - `binary_sensor.{device_name}_remote_control`
 - `binary_sensor.{device_name}_power`
 
-### Controls
+**Controls:**
+
 - `switch.{device_name}_bubble_soak`
 - `select.{device_name}_detergent_dispense_amount`
 - `select.{device_name}_spin_level`
 - `number.{device_name}_rinse_cycles`
 
+### For Dryers (`dryer: true`)
+
+**Sensors:**
+
+- `sensor.{device_name}_machine_state`
+- `sensor.{device_name}_job_state`
+- `sensor.{device_name}_completion_time`
+- `sensor.{device_name}_energy` (optional)
+- `sensor.{device_name}_energy_saved` (optional)
+- `sensor.{device_name}_power` (optional)
+
+**Binary Sensors:**
+
+- `binary_sensor.{device_name}_power`
+- `binary_sensor.{device_name}_remote_control`
+
+**Controls:**
+
+- `select.{device_name}` (dryer program selector)
+
+> **Note:** Dryers automatically hide water consumption and washer-specific controls like bubble soak, detergent settings, etc.
+
 ## Examples
 
-### With Custom Icon
+### Washing Machine with Custom Icon
 
 ```yaml
 type: custom:samsung-washer-card
 device_name: washing_machine
+dryer: false
 icon: "mdi:washing-machine"
 ```
 
-### Multiple Washers
+### Dryer Configuration
+
+```yaml
+type: custom:samsung-washer-card
+device_name: dryer
+dryer: true
+icon: "mdi:tumble-dryer"
+```
+
+### Multiple Appliances
 
 ```yaml
 # Kitchen Washer
 type: custom:samsung-washer-card
 device_name: washing_machine
+dryer: false
 icon: "🏠"
 
-# Laundry Room Washer  
+# Laundry Room Dryer  
 type: custom:samsung-washer-card
-device_name: washing_machine
-icon: "mdi:tumble-dryer"
+device_name: dryer
+dryer: true
+icon: "🌪️"
 ```
 
 ## Screenshots

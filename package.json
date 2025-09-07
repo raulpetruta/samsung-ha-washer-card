@@ -1,7 +1,7 @@
 {
   "name": "samsung-washer-card",
-  "version": "1.0.1",
-  "description": "A beautiful, animated Home Assistant card for Samsung washing machines with SmartThings integration",
+  "version": "1.1.0",
+  "description": "A beautiful, animated Home Assistant card for Samsung washing machines and dryers with SmartThings integration",
   "main": "src/main.js",
   "scripts": {
     "build": "node build.js",
@@ -16,6 +16,7 @@
     "custom-card",
     "samsung",
     "washing-machine",
+    "dryer",
     "smartthings",
     "hacs"
   ],

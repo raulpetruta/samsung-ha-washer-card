@@ -4,6 +4,7 @@ import { baseStyles } from './styles/base.js';
 import { animationStyles } from './styles/animations.js';
 import { responsiveStyles } from './styles/responsive.js';
 import { createWashingMachine } from './components/washing-machine.js';
+import { createDryer } from './components/dryer.js';
 import { createSensorsGrid } from './components/sensors-grid.js';
 import { createControlsSection } from './components/controls-section.js';
 import { EntityHelpers } from './utils/entity-helpers.js';
@@ -30,9 +31,10 @@ class SamsungWasherCard extends HTMLElement {
 
     // Get device name from config
     const deviceName = this.config.device_name || 'washing_machine';
+    const isDryer = this.config.dryer || false;
     
     // Get all sensor data
-    const sensorData = EntityHelpers.getAllSensorData(hass, deviceName);
+    const sensorData = EntityHelpers.getAllSensorData(hass, deviceName, isDryer);
     
     // Format completion time
     const formattedCompletionTime = Formatters.formatCompletionTime(sensorData.completionTime);
@@ -45,8 +47,9 @@ class SamsungWasherCard extends HTMLElement {
 
     // Format display name and icon
     const deviceDisplayName = Formatters.formatDeviceName(deviceName);
-    const washerIcon = this.config.icon || '🧺';
-    const iconHtml = Formatters.getIconHtml(washerIcon);
+    const defaultIcon = isDryer ? '🌪️' : '🧺';
+    const deviceIcon = this.config.icon || defaultIcon;
+    const iconHtml = Formatters.getIconHtml(deviceIcon);
 
     // Prepare data for components
     const sensorsGridData = {
@@ -57,7 +60,8 @@ class SamsungWasherCard extends HTMLElement {
       power: sensorData.power,
       energySaved: sensorData.energySaved,
       jobState: sensorData.jobState,
-      washerSelect: sensorData.washerSelect
+      deviceSelect: isDryer ? sensorData.dryerSelect : sensorData.washerSelect,
+      isDryer: isDryer
     };
 
     const controlsData = {
@@ -66,7 +70,8 @@ class SamsungWasherCard extends HTMLElement {
       bubbleSoak: sensorData.bubbleSoak,
       detergentAmount: sensorData.detergentAmount,
       rinseCycles: sensorData.rinseCycles,
-      spinLevel: sensorData.spinLevel
+      spinLevel: sensorData.spinLevel,
+      isDryer: isDryer
     };
 
     // Render the card
@@ -81,7 +86,7 @@ class SamsungWasherCard extends HTMLElement {
         </div>
       </div>
 
-      ${createWashingMachine(animationClass, statusLightClass)}
+      ${isDryer ? createDryer(animationClass, statusLightClass) : createWashingMachine(animationClass, statusLightClass)}
       ${createSensorsGrid(sensorsGridData)}
       ${createControlsSection(controlsData)}
     `;
@@ -144,6 +149,7 @@ class SamsungWasherCard extends HTMLElement {
   static getStubConfig() {
     return {
       device_name: "washing_machine",
+      dryer: false,
       icon: "🧺",
       complete_status_for_x_hours: 2,
       grid_columns: 12,

@@ -8,14 +8,24 @@ export function createSensorsGrid(sensorData) {
     power,
     energySaved,
     jobState,
-    washerSelect
+    deviceSelect,
+    isDryer
   } = sensorData;
 
-  const programCard = washerSelect !== 'Unknown' ? `
+  const programCard = deviceSelect !== 'Unknown' ? `
     <div class="sensor-card">
       <div class="sensor-icon">⚙️</div>
       <div class="sensor-label">Program</div>
-      <div class="sensor-value">${washerSelect}</div>
+      <div class="sensor-value">${deviceSelect}</div>
+    </div>
+  ` : '';
+
+  // Hide water consumption for dryers
+  const waterCard = !isDryer ? `
+    <div class="sensor-card">
+      <div class="sensor-icon">💧</div>
+      <div class="sensor-label">Water Used</div>
+      <div class="sensor-value">${waterConsumption} L</div>
     </div>
   ` : '';
 
@@ -33,11 +43,7 @@ export function createSensorsGrid(sensorData) {
         <div class="sensor-value">${energy} kWh</div>
       </div>
       
-      <div class="sensor-card">
-        <div class="sensor-icon">💧</div>
-        <div class="sensor-label">Water Used</div>
-        <div class="sensor-value">${waterConsumption} L</div>
-      </div>
+      ${waterCard}
       
       <div class="sensor-card">
         <div class="sensor-icon">🔌</div>

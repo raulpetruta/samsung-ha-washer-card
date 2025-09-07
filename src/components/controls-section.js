@@ -6,8 +6,32 @@ export function createControlsSection(controlsData) {
     bubbleSoak,
     detergentAmount,
     rinseCycles,
-    spinLevel
+    spinLevel,
+    isDryer
   } = controlsData;
+
+  // Show different controls based on device type
+  const washerSpecificControls = !isDryer ? `
+    <div class="control-item">
+      <span class="control-label">🫧 Bubble Soak</span>
+      <span class="control-value">${bubbleSoak}</span>
+    </div>
+    
+    <div class="control-item">
+      <span class="control-label">🧴 Detergent</span>
+      <span class="control-value">${detergentAmount}</span>
+    </div>
+    
+    <div class="control-item">
+      <span class="control-label">🔄 Rinse Cycles</span>
+      <span class="control-value">${rinseCycles}</span>
+    </div>
+    
+    <div class="control-item">
+      <span class="control-label">🌪️ Spin Level</span>
+      <span class="control-value">${spinLevel} RPM</span>
+    </div>
+  ` : '';
 
   return `
     <div class="controls-section">
@@ -15,7 +39,7 @@ export function createControlsSection(controlsData) {
       
       <div class="controls-grid">
         <div class="control-item">
-          <span class="control-label">🔒 Child Lock</span>
+          <span class="control-label">� Child Lock</span>
           <span class="control-value">${childLock}</span>
         </div>
         
@@ -24,25 +48,7 @@ export function createControlsSection(controlsData) {
           <span class="control-value">${remoteControl}</span>
         </div>
         
-        <div class="control-item">
-          <span class="control-label">🫧 Bubble Soak</span>
-          <span class="control-value">${bubbleSoak}</span>
-        </div>
-        
-        <div class="control-item">
-          <span class="control-label">🧴 Detergent</span>
-          <span class="control-value">${detergentAmount}</span>
-        </div>
-        
-        <div class="control-item">
-          <span class="control-label">🔄 Rinse Cycles</span>
-          <span class="control-value">${rinseCycles}</span>
-        </div>
-        
-        <div class="control-item">
-          <span class="control-label">🌪️ Spin Level</span>
-          <span class="control-value">${spinLevel} RPM</span>
-        </div>
+        ${washerSpecificControls}
       </div>
     </div>
   `;
