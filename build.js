@@ -21,6 +21,7 @@ const animationStyles = readModule('src/styles/animations.js');
 const responsiveStyles = readModule('src/styles/responsive.js');
 
 const washingMachine = readModule('src/components/washing-machine.js');
+const dryer = readModule('src/components/dryer.js');
 const sensorsGrid = readModule('src/components/sensors-grid.js');
 const controlsSection = readModule('src/components/controls-section.js');
 
@@ -49,6 +50,8 @@ ${responsiveStyles}
 
 ${washingMachine}
 
+${dryer}
+
 ${sensorsGrid}
 
 ${controlsSection}
@@ -75,7 +78,7 @@ fs.writeFileSync('dist/samsung-washer-card.js', combinedContent);
 const stats = {
   size: fs.statSync('samsung-washer-card.js').size,
   lines: combinedContent.split('\n').length,
-  modules: 8
+  modules: 9
 };
 
 console.log('✅ Build complete!');
