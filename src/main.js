@@ -28,8 +28,12 @@ class SamsungWasherCard extends HTMLElement {
       this.content = this.querySelector(".card-content");
     }
 
-    // Get device name from config
-    const deviceName = this.config.device_name || 'washing_machine';
+    // Get device name from config - handle both full entity ID and device name
+    let deviceName = this.config.device_name || 'washing_machine';
+    if (deviceName.includes('.')) {
+      // Extract device name from full entity ID (e.g., "select.washing_machine" -> "washing_machine")
+      deviceName = deviceName.split('.').pop();
+    }
     
     // Get all sensor data
     const sensorData = EntityHelpers.getAllSensorData(hass, deviceName);
@@ -92,8 +96,14 @@ class SamsungWasherCard extends HTMLElement {
     const completeStatusHours = this.config.complete_status_for_x_hours || 2;
     
     try {
+      // Get device name - handle both full entity ID and device name
+      let deviceName = this.config.device_name || 'washing_machine';
+      if (deviceName.includes('.')) {
+        deviceName = deviceName.split('.').pop();
+      }
+      
       // Get the raw completion time directly from hass
-      const completionTimeRaw = EntityHelpers.getEntityValue(hass, `sensor.${this.config.device_name || 'washing_machine'}_completion_time`, '');
+      const completionTimeRaw = EntityHelpers.getEntityValue(hass, `sensor.${deviceName}_completion_time`, '');
       if (!completionTimeRaw || completionTimeRaw === 'Unknown' || completionTimeRaw === 'unavailable') {
         return false;
       }
@@ -135,11 +145,6 @@ class SamsungWasherCard extends HTMLElement {
     };
   }
 
-  // Return the visual editor for the card configuration
-  static getConfigElement() {
-    return document.createElement("samsung-washer-card-editor");
-  }
-
   // Return the stub configuration for the card
   static getStubConfig() {
     return {
@@ -148,194 +153,62 @@ class SamsungWasherCard extends HTMLElement {
       complete_status_for_x_hours: 2
     };
   }
-}
 
-// Configuration Editor Class
-class SamsungWasherCardEditor extends HTMLElement {
-  setConfig(config) {
-    this.config = { ...config };
-    this.render();
-  }
-
-  configChanged(newConfig) {
-    const event = new Event("config-changed", {
-      bubbles: true,
-      composed: true,
-    });
-    event.detail = { config: newConfig };
-    this.dispatchEvent(event);
-  }
-
-  _getPickerValue() {
-    if (!this.config.device_name) return '';
-    if (this.config.device_name.includes('.')) return this.config.device_name;
-    return `select.${this.config.device_name}`;
-  }
-
-  render() {
-    if (!this.config) {
-      return;
-    }
-
-    this.innerHTML = `
-      <div class="card-config">
-        <style>
-          .card-config {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            padding: 16px;
+  // Use built-in form editor with selectors
+  static getConfigForm() {
+    return {
+      schema: [
+        {
+          name: "device_name",
+          required: true,
+          selector: {
+            entity: {
+              filter: {
+                domain: "select"
+              }
+            }
           }
-          .config-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
+        },
+        {
+          name: "icon",
+          selector: {
+            icon: {}
           }
-          .config-label {
-            font-weight: 500;
-            min-width: 140px;
+        },
+        {
+          name: "complete_status_for_x_hours",
+          default: 2,
+          selector: {
+            number: {
+              min: 1,
+              max: 24,
+              mode: "box",
+              unit_of_measurement: "hours"
+            }
           }
-          .config-input {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-          }
-          .config-section {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 16px;
-            margin: 8px 0;
-          }
-          .config-section-title {
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #1976d2;
-          }
-          .config-help {
-            font-size: 12px;
-            color: #666;
-            margin-top: 4px;
-          }
-        </style>
-
-        <div class="config-section">
-          <div class="config-section-title">Device Configuration</div>
-          
-          <div class="config-row">
-            <label class="config-label">Device Name:</label>
-            <ha-selector
-              class="config-input"
-              .hass="${this._hass}"
-              .selector="${{entity: {filter: {domain: 'select'}}}}"
-              .value="${this._getPickerValue()}"
-              .label="Device Entity"
-              @value-changed="${this._valueChanged}"
-              .configValue="${'device_name'}"
-            ></ha-selector>
-          </div>
-          <div class="config-help">Select your washer device (e.g., select.washing_machine)</div>
-
-          <div class="config-row">
-            <label class="config-label">Icon:</label>
-            <input
-              type="text"
-              class="config-input"
-              value="${this.config.icon || ''}"
-              data-config-key="icon"
-              placeholder="🧺 or mdi:washing-machine"
-            />
-          </div>
-          <div class="config-help">Emoji or Material Design Icon (e.g., mdi:washing-machine)</div>
-
-          <div class="config-row">
-            <label class="config-label">Complete Status Duration (hours):</label>
-            <input
-              type="number"
-              class="config-input"
-              value="${this.config.complete_status_for_x_hours || 2}"
-              data-config-key="complete_status_for_x_hours"
-              min="1"
-              max="24"
-            />
-          </div>
-          <div class="config-help">Hours to show green "completed" status after washing is done</div>
-        </div>
-      </div>
-    `;
-    
-    // Setup ha-selector
-    const selector = this.querySelector('ha-selector');
-    if (selector && this._hass) {
-      selector.hass = this._hass;
-      selector.value = this._getPickerValue();
-      selector.selector = {entity: {filter: {domain: 'select'}}};
-    }
-
-    // Setup other inputs
-    const inputs = this.querySelectorAll('input');
-    inputs.forEach(input => {
-      input.addEventListener('input', this._valueChanged.bind(this));
-    });
-  }
-
-  _valueChanged(ev) {
-    if (!this.config || !ev.target) {
-      return;
-    }
-
-    const target = ev.target;
-    const key = target.dataset.configKey || target.configValue;
-    
-    if (!key) {
-      return;
-    }
-
-    let value = target.value;
-    
-    // Handle ha-entity-picker value
-    if (ev.detail && ev.detail.value !== undefined) {
-      value = ev.detail.value;
-    }
-    
-    // Special handling for device_name from picker
-    if (key === 'device_name' && value.includes('.')) {
-      value = value.split('.').pop();
-    }
-    
-    // Convert numbers
-    if (target.type === 'number') {
-      value = parseInt(value) || 0;
-    }
-
-    // Update config
-    const newConfig = { ...this.config };
-    newConfig[key] = value;
-
-    this.config = newConfig;
-    this.configChanged(newConfig);
-  }
-
-  set hass(hass) {
-    this._hass = hass;
-    const selector = this.querySelector('ha-selector');
-    if (selector) {
-      selector.hass = hass;
-    } else if (!this.hasRendered) {
-      this.hasRendered = true;
-      this.render();
-    }
-  }
-
-  connectedCallback() {
-    this.render();
+        }
+      ],
+      computeLabel: (schema) => {
+        const labels = {
+          device_name: "Washer Device",
+          icon: "Card Icon",
+          complete_status_for_x_hours: "Completed Status Duration"
+        };
+        return labels[schema.name];
+      },
+      computeHelper: (schema) => {
+        const helpers = {
+          device_name: "Select your Samsung washing machine device (e.g., select.washing_machine)",
+          icon: "Icon to display in the card header (emoji or mdi:icon-name)",
+          complete_status_for_x_hours: "Hours to show green 'completed' status after washing is done"
+        };
+        return helpers[schema.name];
+      }
+    };
   }
 }
 
 customElements.define("samsung-washer-card", SamsungWasherCard);
-customElements.define("samsung-washer-card-editor", SamsungWasherCardEditor);
 
 // Register the card with Home Assistant
 window.customCards = window.customCards || [];
