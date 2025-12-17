@@ -128,10 +128,10 @@ class SamsungWasherCard extends HTMLElement {
   // The rules for sizing your card in the grid in sections view
   getGridOptions() {
     return {
-      rows: 12,
-      columns: 12,
-      min_rows: 8,
-      max_rows: 20,
+      rows: 8,
+      columns: 4,
+      min_rows: 6,
+      max_rows: 12,
     };
   }
 
@@ -226,11 +226,15 @@ class SamsungWasherCardEditor extends HTMLElement {
           
           <div class="config-row">
             <label class="config-label">Device Name:</label>
-            <ha-entity-picker
+            <ha-selector
               class="config-input"
-              config-value="device_name"
-              allow-custom-entity
-            ></ha-entity-picker>
+              .hass="${this._hass}"
+              .selector="${{entity: {filter: {domain: 'select'}}}}"
+              .value="${this._getPickerValue()}"
+              .label="Device Entity"
+              @value-changed="${this._valueChanged}"
+              .configValue="${'device_name'}"
+            ></ha-selector>
           </div>
           <div class="config-help">Select your washer device (e.g., select.washing_machine)</div>
 
@@ -262,13 +266,12 @@ class SamsungWasherCardEditor extends HTMLElement {
       </div>
     `;
     
-    // Setup ha-entity-picker
-    const picker = this.querySelector('ha-entity-picker');
-    if (picker) {
-      picker.hass = this._hass;
-      picker.value = this._getPickerValue();
-      picker.includeDomains = ['select'];
-      picker.addEventListener('value-changed', this._valueChanged.bind(this));
+    // Setup ha-selector
+    const selector = this.querySelector('ha-selector');
+    if (selector && this._hass) {
+      selector.hass = this._hass;
+      selector.value = this._getPickerValue();
+      selector.selector = {entity: {filter: {domain: 'select'}}};
     }
 
     // Setup other inputs
@@ -317,13 +320,11 @@ class SamsungWasherCardEditor extends HTMLElement {
 
   set hass(hass) {
     this._hass = hass;
-    // Only render if we haven't rendered yet or if we need to update the picker
-    // But to avoid losing focus/state, we might want to be careful.
-    // However, for the initial load, we need to render once we have hass.
-    if (this.querySelector('ha-entity-picker')) {
-      const picker = this.querySelector('ha-entity-picker');
-      picker.hass = hass;
-    } else {
+    const selector = this.querySelector('ha-selector');
+    if (selector) {
+      selector.hass = hass;
+    } else if (!this.hasRendered) {
+      this.hasRendered = true;
       this.render();
     }
   }
