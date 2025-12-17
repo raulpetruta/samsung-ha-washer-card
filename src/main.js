@@ -148,23 +148,28 @@ class SamsungWasherCard extends HTMLElement {
   // Return the stub configuration for the card
   static getStubConfig(hass) {
     // Try to auto-detect a select entity that looks like a washing machine
-    let defaultEntity = "";
+    let defaultDeviceName = "washing_machine";
     if (hass) {
       const selectEntities = Object.keys(hass.states).filter(entity => 
         entity.startsWith('select.') && 
-        (entity.includes('wash') || entity.includes('washing'))
+        (entity.toLowerCase().includes('wash') || 
+         entity.toLowerCase().includes('washer') || 
+         entity.toLowerCase().includes('laundry'))
       );
       if (selectEntities.length > 0) {
-        defaultEntity = selectEntities[0];
+        // Extract device name from entity ID (e.g., "select.washing_machine" -> "washing_machine")
+        defaultDeviceName = selectEntities[0].split('.')[1];
       } else {
         // Fallback to any select entity
         const anySelect = Object.keys(hass.states).find(entity => entity.startsWith('select.'));
-        defaultEntity = anySelect || "select.washing_machine";
+        if (anySelect) {
+          defaultDeviceName = anySelect.split('.')[1];
+        }
       }
     }
     
     return {
-      device_name: defaultEntity || "select.washing_machine",
+      device_name: defaultDeviceName,
       icon: "🧺",
       complete_status_for_x_hours: 2
     };
@@ -172,6 +177,11 @@ class SamsungWasherCard extends HTMLElement {
 
   // Use built-in form editor with selectors
   static getConfigForm(hass, config) {
+    // Convert device_name to full entity ID for the selector
+    const currentEntityId = config?.device_name?.includes('.') 
+      ? config.device_name 
+      : `select.${config?.device_name || 'washing_machine'}`;
+    
     return {
       schema: [
         {
@@ -183,7 +193,9 @@ class SamsungWasherCard extends HTMLElement {
                 domain: "select"
               }
             }
-          }
+          },
+          // This is a workaround to show the current value
+          default: currentEntityId
         },
         {
           name: "icon",
@@ -220,11 +232,13 @@ class SamsungWasherCard extends HTMLElement {
         };
         return helpers[schema.name];
       },
-      assertConfig: (config) => {
-        if (config.device_name && !config.device_name.includes('.')) {
-          // Auto-convert old format to new format
-          config.device_name = `select.${config.device_name}`;
+      // Transform the entity ID to just the device name when saving
+      getData: (schema, formData) => {
+        if (schema.name === 'device_name' && formData.device_name?.includes('.')) {
+          // Extract device name from full entity ID
+          return formData.device_name.split('.')[1];
         }
+        return formData[schema.name];
       }
     };
   }
