@@ -146,16 +146,32 @@ class SamsungWasherCard extends HTMLElement {
   }
 
   // Return the stub configuration for the card
-  static getStubConfig() {
+  static getStubConfig(hass) {
+    // Try to auto-detect a select entity that looks like a washing machine
+    let defaultEntity = "";
+    if (hass) {
+      const selectEntities = Object.keys(hass.states).filter(entity => 
+        entity.startsWith('select.') && 
+        (entity.includes('wash') || entity.includes('washing'))
+      );
+      if (selectEntities.length > 0) {
+        defaultEntity = selectEntities[0];
+      } else {
+        // Fallback to any select entity
+        const anySelect = Object.keys(hass.states).find(entity => entity.startsWith('select.'));
+        defaultEntity = anySelect || "select.washing_machine";
+      }
+    }
+    
     return {
-      device_name: "washing_machine",
+      device_name: defaultEntity || "select.washing_machine",
       icon: "🧺",
       complete_status_for_x_hours: 2
     };
   }
 
   // Use built-in form editor with selectors
-  static getConfigForm() {
+  static getConfigForm(hass, config) {
     return {
       schema: [
         {
@@ -198,11 +214,17 @@ class SamsungWasherCard extends HTMLElement {
       },
       computeHelper: (schema) => {
         const helpers = {
-          device_name: "Select your Samsung washing machine device (e.g., select.washing_machine)",
+          device_name: "Select your Samsung washing machine control entity",
           icon: "Icon to display in the card header (emoji or mdi:icon-name)",
           complete_status_for_x_hours: "Hours to show green 'completed' status after washing is done"
         };
         return helpers[schema.name];
+      },
+      assertConfig: (config) => {
+        if (config.device_name && !config.device_name.includes('.')) {
+          // Auto-convert old format to new format
+          config.device_name = `select.${config.device_name}`;
+        }
       }
     };
   }
