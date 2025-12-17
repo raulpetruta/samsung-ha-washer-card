@@ -31,11 +31,14 @@ A beautiful, animated Home Assistant card for Samsung washing machines with Smar
 ### HACS (Recommended)
 
 1. Open HACS in your Home Assistant
-2. Go to "Frontend" section
-3. Click "Explore & Download Repositories"
-4. Search for "Samsung Washer Card"
-5. Download and install
-6. Restart Home Assistant
+2. Go to the 3 dots on top right
+3. Click "Custom repositories"
+4. For "Repository", add "https://github.com/raulpetruta/samsung-ha-washer-card"
+5. For "Type", choose "Dashboard"
+6. Click "Add"
+7. Search for "Samsung Washer Card"
+8. Click the Download button and install it
+9. After the installation is done, click "Reload" as prompted
 
 ### Manual Installation
 
