@@ -35,6 +35,10 @@ class SamsungWasherCard extends HTMLElement {
       deviceName = deviceName.split('.').pop();
     }
     
+    // Debug: Log what device name we're using
+    console.log('Samsung Washer Card: Using device name:', deviceName);
+    console.log('Samsung Washer Card: Looking for entities like:', `sensor.${deviceName}_machine_state`);
+    
     // Get all sensor data
     const sensorData = EntityHelpers.getAllSensorData(hass, deviceName);
     
