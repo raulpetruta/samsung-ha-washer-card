@@ -21,6 +21,8 @@ export const baseStyles = `
   
   .card-content {
     padding: 24px;
+    overflow-y: auto;
+    max-height: 100%;
   }
 
   .washer-header {

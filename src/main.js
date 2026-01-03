@@ -143,16 +143,18 @@ class SamsungWasherCard extends HTMLElement {
   getGridOptions() {
     return {
       rows: 8,
-      columns: 4,
+      columns: 6,
       min_rows: 6,
       max_rows: 12,
+      min_columns: 6,
+      max_columns: 8,
     };
   }
 
   // Return the stub configuration for the card
   static getStubConfig(hass) {
     // Try to auto-detect a select entity that looks like a washing machine
-    let defaultDeviceName = "washing_machine";
+    let defaultDeviceName = "";
     if (hass) {
       const selectEntities = Object.keys(hass.states).filter(entity => 
         entity.startsWith('select.') && 
@@ -163,12 +165,6 @@ class SamsungWasherCard extends HTMLElement {
       if (selectEntities.length > 0) {
         // Extract device name from entity ID (e.g., "select.washing_machine" -> "washing_machine")
         defaultDeviceName = selectEntities[0].split('.')[1];
-      } else {
-        // Fallback to any select entity
-        const anySelect = Object.keys(hass.states).find(entity => entity.startsWith('select.'));
-        if (anySelect) {
-          defaultDeviceName = anySelect.split('.')[1];
-        }
       }
     }
     
@@ -184,7 +180,7 @@ class SamsungWasherCard extends HTMLElement {
     // Convert device_name to full entity ID for the selector
     const currentEntityId = config?.device_name?.includes('.') 
       ? config.device_name 
-      : `select.${config?.device_name || 'washing_machine'}`;
+      : (config?.device_name ? `select.${config.device_name}` : '');
     
     return {
       schema: [
