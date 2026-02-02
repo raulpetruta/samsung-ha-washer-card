@@ -3,7 +3,7 @@ export const responsiveStyles = `
   .sensors-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 8px;
     margin-top: 20px;
   }
   
@@ -23,9 +23,9 @@ export const responsiveStyles = `
     background: rgba(0, 174, 199, 0.05);
     border: 1px solid rgba(0, 174, 199, 0.15);
     border-radius: 12px;
-    padding: 12px;
+    padding: 10px;
     transition: all 0.3s ease;
-    min-height: 80px;
+    min-height: 72px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -89,7 +89,7 @@ export const responsiveStyles = `
   }
   
   .controls-section {
-    margin-top: 20px;
+    margin-top: 16px;
     padding-top: 16px;
     border-top: 2px solid var(--accent-color, rgb(0, 174, 199));
   }

@@ -3,7 +3,7 @@ export const animationStyles = `
   .washing-machine {
     width: 120px;
     height: 140px;
-    margin: 0 auto 20px;
+    margin: 0 auto 16px;
     position: relative;
   }
   

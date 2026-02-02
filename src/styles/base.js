@@ -20,7 +20,7 @@ export const baseStyles = `
   }
   
   .card-content {
-    padding: 24px;
+    padding: 16px;
     overflow-y: auto;
     max-height: 100%;
   }
@@ -29,7 +29,7 @@ export const baseStyles = `
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     padding-bottom: 16px;
     border-bottom: 2px solid var(--accent-color, rgb(0, 174, 199));
   }
