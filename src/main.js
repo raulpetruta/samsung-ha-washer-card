@@ -79,19 +79,26 @@ class SamsungWasherCard extends HTMLElement {
 
     // Render the card
     this.content.innerHTML = `
-      <div class="washer-header">
-        <div class="washer-icon">${iconHtml}</div>
-        <div class="washer-title">
-          <h2 class="washer-name">${deviceDisplayName}</h2>
-          <p class="washer-status">
-            <span class="status-badge ${statusClass}">${sensorData.machineState}</span>
-          </p>
+      <div class="washer-layout">
+        <div class="washer-left">
+          <div class="washer-header">
+            <div class="washer-icon">${iconHtml}</div>
+            <div class="washer-title">
+              <h2 class="washer-name">${deviceDisplayName}</h2>
+              <p class="washer-status">
+                <span class="status-badge ${statusClass}">${sensorData.machineState}</span>
+              </p>
+            </div>
+          </div>
+
+          ${createWashingMachine(animationClass, statusLightClass)}
+        </div>
+        
+        <div class="washer-right">
+          ${createSensorsGrid(sensorsGridData)}
+          ${createControlsSection(controlsData)}
         </div>
       </div>
-
-      ${createWashingMachine(animationClass, statusLightClass)}
-      ${createSensorsGrid(sensorsGridData)}
-      ${createControlsSection(controlsData)}
     `;
   }
 
@@ -142,12 +149,12 @@ class SamsungWasherCard extends HTMLElement {
   // The rules for sizing your card in the grid in sections view
   getGridOptions() {
     return {
-      rows: 10,
-      columns: 6,
-      min_rows: 6,
-      max_rows: 14,
-      min_columns: 6,
-      max_columns: 8,
+      rows: 8,
+      columns: 10,
+      min_rows: 8,
+      max_rows: 8,
+      min_columns: 10,
+      max_columns: 10,
     };
   }
 

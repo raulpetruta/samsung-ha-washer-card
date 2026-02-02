@@ -9,6 +9,26 @@ export const baseStyles = `
     border: 1px solid rgba(0, 174, 199, 0.1);
     transition: all 0.3s ease;
   }
+
+  .washer-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 24px;
+    height: 100%;
+  }
+
+  .washer-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .washer-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
   
   @media (prefers-color-scheme: dark) {
     ha-card {
@@ -29,9 +49,11 @@ export const baseStyles = `
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-bottom: 16px;
-    padding-bottom: 16px;
-    border-bottom: 2px solid var(--accent-color, rgb(0, 174, 199));
+    margin-bottom: 24px;
+    padding-bottom: 0;
+    border-bottom: none;
+    width: 100%;
+    justify-content: center;
   }
   
   @media (prefers-color-scheme: dark) {

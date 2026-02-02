@@ -3,8 +3,8 @@ export const responsiveStyles = `
   .sensors-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-top: 20px;
+    gap: 12px;
+    margin-top: 0;
   }
   
   @media (max-width: 768px) {
