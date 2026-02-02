@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2026-02-02
+
+### Changed
+
+- **UI Redesign**: Switch to a horizontal two-column layout to better fit wider aspect ratios.
+- **Compact Layout**: Enforced strict 8-row height limit (approx 400px) and expanded to 10 columns.
+- **Controls**: Reconfigured control panel to use 3 columns, reducing vertical height.
+- **Styling**: Aggressive reduction of padding, margins, and font sizes for a "tiny" mode that fits more content.
+- **Build System**: Refactored build process to output purely to `dist/` directory, removing the root artifact to prevent duplication.
+
 ## [1.0.3] - 2026-01-03
 
 ### Improved
