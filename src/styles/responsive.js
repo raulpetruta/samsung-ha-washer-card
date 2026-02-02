@@ -3,7 +3,7 @@ export const responsiveStyles = `
   .sensors-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 8px;
     margin-top: 0;
   }
   
@@ -23,9 +23,9 @@ export const responsiveStyles = `
     background: rgba(0, 174, 199, 0.05);
     border: 1px solid rgba(0, 174, 199, 0.15);
     border-radius: 12px;
-    padding: 10px;
+    padding: 8px;
     transition: all 0.3s ease;
-    min-height: 72px;
+    min-height: 60px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -50,8 +50,8 @@ export const responsiveStyles = `
   }
   
   .sensor-icon {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     margin-bottom: 8px;
     opacity: 0.8;
     font-size: 16px;
@@ -59,7 +59,7 @@ export const responsiveStyles = `
   }
 
   .sensor-label {
-    font-size: 11px;
+    font-size: 10px;
     opacity: 0.7;
     margin-bottom: 4px;
     text-transform: uppercase;
@@ -75,7 +75,7 @@ export const responsiveStyles = `
   }
   
   .sensor-value {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     line-height: 1.2;
     color: var(--primary-text-color, rgb(55, 65, 81));
@@ -130,13 +130,13 @@ export const responsiveStyles = `
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 12px;
+    padding: 6px 10px;
     margin: 0;
     background: rgba(0, 174, 199, 0.03);
     border: 1px solid rgba(0, 174, 199, 0.1);
     border-radius: 8px;
     transition: all 0.3s ease;
-    min-height: 36px;
+    min-height: 32px;
   }
   
   .control-item:hover {

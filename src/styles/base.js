@@ -13,7 +13,7 @@ export const baseStyles = `
   .washer-layout {
     display: grid;
     grid-template-columns: 1fr 1.5fr;
-    gap: 24px;
+    gap: 16px;
     height: 100%;
   }
 
