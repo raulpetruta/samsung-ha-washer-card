@@ -3,7 +3,7 @@ export const responsiveStyles = `
   .sensors-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    gap: 6px;
     margin-top: 0;
   }
   
@@ -23,9 +23,9 @@ export const responsiveStyles = `
     background: rgba(0, 174, 199, 0.05);
     border: 1px solid rgba(0, 174, 199, 0.15);
     border-radius: 12px;
-    padding: 8px;
+    padding: 6px;
     transition: all 0.3s ease;
-    min-height: 60px;
+    min-height: 52px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -89,9 +89,9 @@ export const responsiveStyles = `
   }
   
   .controls-section {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 2px solid var(--accent-color, rgb(0, 174, 199));
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--accent-color, rgb(0, 174, 199));
   }
   
   @media (prefers-color-scheme: dark) {
@@ -102,9 +102,9 @@ export const responsiveStyles = `
   
   .controls-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    margin-top: 12px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 8px;
   }
   
   @media (max-width: 480px) {
@@ -116,7 +116,7 @@ export const responsiveStyles = `
   .controls-title {
     font-size: 14px;
     font-weight: 600;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     color: var(--primary-text-color, rgb(55, 65, 81));
   }
   
