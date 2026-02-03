@@ -52,7 +52,14 @@ class SamsungWasherCard extends HTMLElement {
     const statusLightClass = Formatters.getStatusLightClass(sensorData.machineState, isRecentlyCompleted);
 
     // Format display name and icon
-    const deviceDisplayName = Formatters.formatDeviceName(deviceName);
+    // Try to get the friendly name from the main select entity
+    let deviceDisplayName = Formatters.formatDeviceName(deviceName);
+    const mainEntityId = this.config.device_name?.includes('.') ? this.config.device_name : `select.${deviceName}`;
+    
+    if (hass.states[mainEntityId] && hass.states[mainEntityId].attributes.friendly_name) {
+      deviceDisplayName = hass.states[mainEntityId].attributes.friendly_name;
+    }
+    
     const washerIcon = this.config.icon || '🧺';
     const iconHtml = Formatters.getIconHtml(washerIcon);
 
