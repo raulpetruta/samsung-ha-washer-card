@@ -7,8 +7,7 @@ export function createSensorsGrid(sensorData) {
     powerBinary,
     power,
     energySaved,
-    jobState,
-    washerSelect
+    jobState
   } = sensorData;
 
   // Helper to generate key-value card if data exists
@@ -23,14 +22,6 @@ export function createSensorsGrid(sensorData) {
     `;
   };
 
-  const programCard = washerSelect && washerSelect !== 'Unknown' ? `
-    <div class="sensor-card">
-      <div class="sensor-icon">⚙️</div>
-      <div class="sensor-label">Program</div>
-      <div class="sensor-value">${washerSelect}</div>
-    </div>
-  ` : '';
-
   return `
     <div class="sensors-grid">
       ${createCard('⏱️', 'Completion Time', completionTime)}
@@ -40,7 +31,6 @@ export function createSensorsGrid(sensorData) {
       ${createCard('⚡', 'Current Power', power, 'W')}
       ${createCard('💚', 'Energy Saved', energySaved, 'kWh')}
       ${createCard('👁️', 'Job State', jobState)}
-      ${programCard}
     </div>
   `;
 }

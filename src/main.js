@@ -62,6 +62,7 @@ class SamsungWasherCard extends HTMLElement {
     const iconHtml = Formatters.getIconHtml(washerIcon);
 
     // Prepare data for components
+    // Prepare data for components
     const sensorsGridData = {
       completionTime: formattedCompletionTime,
       energy: sensorData.energy,
@@ -69,8 +70,7 @@ class SamsungWasherCard extends HTMLElement {
       powerBinary: sensorData.powerBinary,
       power: sensorData.power,
       energySaved: sensorData.energySaved,
-      jobState: sensorData.jobState,
-      washerSelect: sensorData.washerSelect
+      jobState: sensorData.jobState
     };
 
     const controlsData = {
@@ -82,6 +82,11 @@ class SamsungWasherCard extends HTMLElement {
       spinLevel: sensorData.spinLevel
     };
 
+    // Determine status text (Program name or Machine State)
+    const statusText = (sensorData.washerSelect && sensorData.washerSelect !== 'Unknown') 
+      ? sensorData.washerSelect 
+      : sensorData.machineState;
+
     // Render the card
     this.content.innerHTML = `
       <div class="washer-layout">
@@ -91,7 +96,7 @@ class SamsungWasherCard extends HTMLElement {
             <div class="washer-title">
               <h2 class="washer-name">${deviceDisplayName}</h2>
               <p class="washer-status">
-                <span class="status-badge ${statusClass}">${sensorData.machineState}</span>
+                <span class="status-badge ${statusClass}">${statusText}</span>
               </p>
             </div>
           </div>
