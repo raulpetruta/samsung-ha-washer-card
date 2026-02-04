@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-02-04
+
+### Added
+
+- **Program/Cycle Display**: Added support for displaying the currently selected program or cycle (e.g., "Cotton", "Delicates") when the `program_entity` is configured.
+- **Enhanced Status Text**: The main status text now prioritizes showing the program name when available, falling back to the machine state only when the program is unknown.
+
+### Fixed
+
+- **HACS Compliance**: Updated `hacs.json` configuration to correctly point to the `dist` folder for the plugin file. This resolves the "Repository structure is not compliant" error when adding the repository to HACS.
+
+### Changed
+
+- **Configuration**: Added `program_entity` to the configuration options for users who want to display their washer's current program.
+- **Documentation**: Updated screenshots and documentation to include the new program display feature.
+
 ## [1.0.4] - 2026-02-02
 
 ### Changed

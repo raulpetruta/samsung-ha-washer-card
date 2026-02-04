@@ -67,17 +67,17 @@ if (!fs.existsSync('dist')) {
   fs.mkdirSync('dist');
 }
 console.log('💾 Writing distribution file to dist/...');
-fs.writeFileSync('dist/samsung-washer-card.js', combinedContent);
+fs.writeFileSync('dist/samsung-ha-washer-card.js', combinedContent);
 
 // Generate some statistics
 const stats = {
-  size: fs.statSync('dist/samsung-washer-card.js').size,
+  size: fs.statSync('dist/samsung-ha-washer-card.js').size,
   lines: combinedContent.split('\n').length,
   modules: 8
 };
 
 console.log('✅ Build complete!');
-console.log(`📦 File: dist/samsung-washer-card.js`);
+console.log(`📦 File: dist/samsung-ha-washer-card.js`);
 console.log(`📏 Size: ${(stats.size / 1024).toFixed(1)} KB`);
 console.log(`📄 Lines: ${stats.lines}`);
 console.log(`🧩 Modules: ${stats.modules}`);

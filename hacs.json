@@ -1,9 +1,9 @@
 {
   "name": "Samsung Washer Card",
-  "hacs": "1.6.0",
+  "hacs": "2.0.5",
   "render_readme": true,
-  "content_in_root": true,
-  "filename": "samsung-washer-card.js",
+  "content_in_root": false,
+  "filename": "samsung-ha-washer-card.js",
   "domains": ["sensor", "binary_sensor", "switch", "select", "number"],
   "iot_class": "Local Polling"
 }
