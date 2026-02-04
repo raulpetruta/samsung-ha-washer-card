@@ -77,6 +77,7 @@ class SamsungWasherCard extends HTMLElement {
       childLock: sensorData.childLock,
       remoteControl: sensorData.remoteControl,
       bubbleSoak: sensorData.bubbleSoak,
+      wrinklePrevent: sensorData.wrinklePrevent,
       detergentAmount: sensorData.detergentAmount,
       rinseCycles: sensorData.rinseCycles,
       spinLevel: sensorData.spinLevel

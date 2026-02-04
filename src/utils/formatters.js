@@ -9,6 +9,39 @@ export class Formatters {
       .join(' ');
   }
 
+  static formatJobState(state) {
+    if (!state) return 'Unknown';
+    
+    const stateMap = {
+      'weight_sensing': 'Weight Sensing',
+      'washing': 'Washing',
+      'wash': 'Washing',
+      'rinsing': 'Rinsing',
+      'rinse': 'Rinsing',
+      'spinning': 'Spinning',
+      'spin': 'Spinning',
+      'drying': 'Drying',
+      'air_wash': 'Air Wash',
+      'cooling': 'Cooling',
+      'wrinkle_prevent': 'Wrinkle Prevent',
+      'refreshing': 'Refreshing',
+      'dehumidifying': 'Dehumidifying',
+      'ai_drying': 'AI Drying',
+      'sanitizing': 'Sanitizing',
+      'internal_care': 'Internal Care',
+      'freeze_protection': 'Freeze Protection',
+      'continuous_dehumidifying': 'Continuous Dehumidifying',
+      'thawing_frozen_inside': 'Thawing Frozen',
+      'delay': 'Delayed',
+      'finish': 'Finished',
+      'none': 'None',
+      'unknown': 'Unknown'
+    };
+
+    return stateMap[state.toLowerCase()] || 
+           state.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  }
+
   static formatCompletionTime(timeStr) {
     if (timeStr === 'Unknown' || timeStr === 'unavailable') {
       return 'Unknown';

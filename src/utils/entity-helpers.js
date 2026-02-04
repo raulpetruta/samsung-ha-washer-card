@@ -46,6 +46,15 @@ export class EntityHelpers {
       return null;
     };
 
+    // Helper for switches
+    const getConfiguredSwitch = (configKey, defaultValue = 'Off') => {
+      const entityId = config[configKey];
+      if (entityId) {
+        return this.getSwitchState(hass, entityId);
+      }
+      return null;
+    };
+
     return {
       // Core state (keep auto-detection for animations)
       machineState: this.getEntityValue(hass, `sensor.${deviceName}_machine_state`, 'Unknown'),
@@ -58,14 +67,15 @@ export class EntityHelpers {
       power: getConfiguredValue('power_entity', null, '0'),
       waterConsumption: getConfiguredValue('water_entity', null, '0'),
       powerBinary: getConfiguredBinary('power_binary_entity'),
-      washerSelect: getConfiguredValue('program_entity', null, 'Unknown'),
-
+      washerSelect: this.getEntityValue(hass, `select.${deviceName}`, 'Unknown'),
+      
       // Controls (keep auto-detection for now, user only specified "sensors from the sensor card")
       energyDiff: this.getEntityValue(hass, `sensor.${deviceName}_energy_difference`, '0'),
       powerEnergy: this.getEntityValue(hass, `sensor.${deviceName}_power_energy`, '0'),
       childLock: this.getBinaryState(hass, `binary_sensor.${deviceName}_child_lock`),
       remoteControl: this.getBinaryState(hass, `binary_sensor.${deviceName}_remote_control`),
       bubbleSoak: this.getSwitchState(hass, `switch.${deviceName}_bubble_soak`),
+      wrinklePrevent: getConfiguredSwitch('wrinkle_prevent_entity', 'Off'),
       detergentAmount: this.getEntityValue(hass, `select.${deviceName}_detergent_dispense_amount`, 'Extra'),
       rinseCycles: this.getEntityValue(hass, `number.${deviceName}_rinse_cycles`, '2'),
       spinLevel: this.getEntityValue(hass, `select.${deviceName}_spin_level`, '1400'),
