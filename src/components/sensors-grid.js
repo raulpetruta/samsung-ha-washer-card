@@ -11,7 +11,19 @@ export function createSensorsGrid(sensorData) {
     washerSelect
   } = sensorData;
 
-  const programCard = washerSelect !== 'Unknown' ? `
+  // Helper to generate key-value card if data exists
+  const createCard = (icon, label, value, unit = '') => {
+    if (!value) return '';
+    return `
+      <div class="sensor-card">
+        <div class="sensor-icon">${icon}</div>
+        <div class="sensor-label">${label}</div>
+        <div class="sensor-value">${value}${unit ? ' ' + unit : ''}</div>
+      </div>
+    `;
+  };
+
+  const programCard = washerSelect && washerSelect !== 'Unknown' ? `
     <div class="sensor-card">
       <div class="sensor-icon">⚙️</div>
       <div class="sensor-label">Program</div>
@@ -21,48 +33,13 @@ export function createSensorsGrid(sensorData) {
 
   return `
     <div class="sensors-grid">
-      <div class="sensor-card">
-        <div class="sensor-icon">⏱️</div>
-        <div class="sensor-label">Completion Time</div>
-        <div class="sensor-value">${completionTime}</div>
-      </div>
-      
-      <div class="sensor-card">
-        <div class="sensor-icon">⚡</div>
-        <div class="sensor-label">Energy Used</div>
-        <div class="sensor-value">${energy} kWh</div>
-      </div>
-      
-      <div class="sensor-card">
-        <div class="sensor-icon">💧</div>
-        <div class="sensor-label">Water Used</div>
-        <div class="sensor-value">${waterConsumption} L</div>
-      </div>
-      
-      <div class="sensor-card">
-        <div class="sensor-icon">🔌</div>
-        <div class="sensor-label">Power Status</div>
-        <div class="sensor-value">${powerBinary}</div>
-      </div>
-      
-      <div class="sensor-card">
-        <div class="sensor-icon">⚡</div>
-        <div class="sensor-label">Current Power</div>
-        <div class="sensor-value">${power} W</div>
-      </div>
-      
-      <div class="sensor-card">
-        <div class="sensor-icon">💚</div>
-        <div class="sensor-label">Energy Saved</div>
-        <div class="sensor-value">${energySaved} kWh</div>
-      </div>
-      
-      <div class="sensor-card">
-        <div class="sensor-icon">👁️</div>
-        <div class="sensor-label">Job State</div>
-        <div class="sensor-value">${jobState}</div>
-      </div>
-
+      ${createCard('⏱️', 'Completion Time', completionTime)}
+      ${createCard('⚡', 'Energy Used', energy, 'kWh')}
+      ${createCard('💧', 'Water Used', waterConsumption, 'L')}
+      ${createCard('🔌', 'Power Status', powerBinary)}
+      ${createCard('⚡', 'Current Power', power, 'W')}
+      ${createCard('💚', 'Energy Saved', energySaved, 'kWh')}
+      ${createCard('👁️', 'Job State', jobState)}
       ${programCard}
     </div>
   `;
