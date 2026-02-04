@@ -40,7 +40,7 @@ class SamsungWasherCard extends HTMLElement {
     console.log('Samsung Washer Card: Looking for entities like:', `sensor.${deviceName}_machine_state`);
     
     // Get all sensor data
-    const sensorData = EntityHelpers.getAllSensorData(hass, deviceName);
+    const sensorData = EntityHelpers.getAllSensorData(hass, this.config);
     
     // Format completion time
     const formattedCompletionTime = Formatters.formatCompletionTime(sensorData.completionTime);
@@ -212,6 +212,73 @@ class SamsungWasherCard extends HTMLElement {
           default: currentEntityId
         },
         {
+          name: "completion_time_entity",
+          selector: {
+            entity: {
+              domain: "sensor"
+            }
+          }
+        },
+        {
+          name: "energy_entity",
+          selector: {
+            entity: {
+              domain: "sensor",
+              device_class: "energy"
+            }
+          }
+        },
+        {
+          name: "water_entity",
+          selector: {
+            entity: {
+              domain: "sensor"
+            }
+          }
+        },
+        {
+          name: "power_binary_entity",
+          selector: {
+            entity: {
+              domain: "binary_sensor"
+            }
+          }
+        },
+        {
+          name: "power_entity",
+          selector: {
+            entity: {
+              domain: "sensor",
+              device_class: "power"
+            }
+          }
+        },
+        {
+          name: "energy_saved_entity",
+          selector: {
+            entity: {
+              domain: "sensor",
+              device_class: "energy"
+            }
+          }
+        },
+        {
+          name: "job_state_entity",
+          selector: {
+            entity: {
+              domain: "sensor"
+            }
+          }
+        },
+        {
+          name: "program_entity",
+          selector: {
+            entity: {
+              domain: "select"
+            }
+          }
+        },
+        {
           name: "icon",
           selector: {
             icon: {}
@@ -232,7 +299,15 @@ class SamsungWasherCard extends HTMLElement {
       ],
       computeLabel: (schema) => {
         const labels = {
-          device_name: "Washer Device",
+          device_name: "Main Washer Device (Controls & Status)",
+          completion_time_entity: "Completion Time Sensor",
+          energy_entity: "Energy Sensor",
+          water_entity: "Water Consumption Sensor",
+          power_binary_entity: "Power Status (Binary)",
+          power_entity: "Power Sensor",
+          energy_saved_entity: "Energy Saved Sensor",
+          job_state_entity: "Job State Sensor",
+          program_entity: "Program/Cycle Select",
           icon: "Card Icon",
           complete_status_for_x_hours: "Completed Status Duration"
         };
