@@ -159,6 +159,13 @@ icon: "mdi:tumble-dryer"
 ### Dark Mode
 ![Dark Mode](screenshots/dark-mode.png)
 
+### Setup Card View
+![Setup Card View](screenshots/setup-view.png)
+
+You can now customize which information cards appear in the grid:
+- **Manual Selection**: Choose the exact entity for each sensor (Energy, Water, Power, etc.) from the dropdown menus.
+- **Hide Unused**: Leave a field empty if you don't want to show that specific card. The grid will automatically adjust to hide unconfigured sensors.
+
 ## Development
 
 The project has a clean, modular structure:

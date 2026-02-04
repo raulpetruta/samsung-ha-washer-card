@@ -48,8 +48,8 @@ export const baseStyles = `
   .washer-header {
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: 12px;
+    margin-bottom: 16px;
     padding-bottom: 0;
     border-bottom: none;
     width: 100%;
@@ -63,19 +63,19 @@ export const baseStyles = `
   }
   
   .washer-icon {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     background: var(--accent-color, rgb(0, 174, 199));
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 20px;
     color: white;
   }
   
   .washer-icon ha-icon {
-    --mdc-icon-size: 24px;
+    --mdc-icon-size: 20px;
     color: white;
   }
   
@@ -90,7 +90,7 @@ export const baseStyles = `
   }
 
   .washer-name {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 600;
     margin: 0;
     color: var(--primary-text-color, rgb(55, 65, 81));
@@ -103,14 +103,14 @@ export const baseStyles = `
   }
   
   .washer-status {
-    font-size: 14px;
+    font-size: 12px;
     opacity: 0.8;
     margin: 4px 0 0 0;
   }
 
   .status-badge {
     display: inline-block;
-    padding: 6px 12px;
+    padding: 4px 8px;
     border-radius: 20px;
     font-size: 12px;
     font-weight: 500;
