@@ -1,14 +1,14 @@
 {
   "name": "samsung-washer-card",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A beautiful, animated Home Assistant card for Samsung washing machines with SmartThings integration",
-  "main": "dist/samsung-washer-card.js",
+  "main": "dist/samsung-ha-washer-card.js",
   "scripts": {
     "build": "node build.js",
-    "dev": "node build.js && echo '👀 Development build complete. Use dist/samsung-washer-card.js for testing.'",
+    "dev": "node build.js && echo '👀 Development build complete. Use dist/samsung-ha-washer-card.js for testing.'",
     "clean": "rm -rf dist/",
     "test": "node build.js && echo '✅ Build test passed'",
-    "validate": "node -c dist/samsung-washer-card.js && echo '✅ Syntax validation passed'",
+    "validate": "node -c dist/samsung-ha-washer-card.js && echo '✅ Syntax validation passed'",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -34,7 +34,7 @@
     "prettier": "^2.0.0"
   },
   "files": [
-    "dist/samsung-washer-card.js",
+    "dist/samsung-ha-washer-card.js",
     "hacs.json",
     "README.md"
   ]

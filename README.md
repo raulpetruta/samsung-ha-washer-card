@@ -42,13 +42,13 @@ A beautiful, animated Home Assistant card for Samsung washing machines with Smar
 
 ### Manual Installation
 
-1. Download `samsung-washer-card.js` from the [latest release](https://github.com/raulpetruta/samsung-ha-washer-card)
-2. Copy to `/config/www/samsung-washer-card/samsung-washer-card.js`
+1. Download `samsung-ha-washer-card.js` from the [latest release](https://github.com/raulpetruta/samsung-ha-washer-card)
+2. Copy to `/config/www/samsung-washer-card/samsung-ha-washer-card.js`
 3. Add to your Lovelace resources:
 
 ```yaml
 resources:
-  - url: /local/samsung-washer-card/samsung-washer-card.js
+  - url: /local/samsung-washer-card/samsung-ha-washer-card.js
     type: module
 ```
 
@@ -181,7 +181,7 @@ src/
 ### Building for Distribution
 
 ```bash
-npm run build    # Creates samsung-washer-card.js for HACS
+npm run build    # Creates samsung-ha-washer-card.js for HACS
 npm run dev      # Development build
 npm run clean    # Clean build files
 ```
