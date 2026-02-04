@@ -1,8 +1,8 @@
 // Animation styles for the washing machine
 export const animationStyles = `
   .washing-machine {
-    width: 120px;
-    height: 140px;
+    width: 100px;
+    height: 120px;
     margin: 0 auto 16px;
     position: relative;
   }
@@ -26,12 +26,12 @@ export const animationStyles = `
   }
   
   .machine-door {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     border: 4px solid var(--accent-color, rgb(0, 174, 199));
     border-radius: 50%;
     position: absolute;
-    top: 25px;
+    top: 20px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(0, 174, 199, 0.1);
@@ -46,8 +46,8 @@ export const animationStyles = `
   }
   
   .drum {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border: 2px solid rgba(0, 174, 199, 0.3);
     border-radius: 50%;
     position: absolute;
