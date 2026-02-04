@@ -215,8 +215,6 @@ class SamsungWasherCard extends HTMLElement {
               }
             }
           },
-          // This is a workaround to show the current value
-          default: currentEntityId
         },
         {
           name: "completion_time_entity",

@@ -49,6 +49,11 @@ export class Formatters {
     
     try {
       const date = new Date(timeStr);
+      // Validate date is valid and reasonable (e.g. not 1970)
+      if (isNaN(date.getTime()) || date.getFullYear() < 2000) {
+        return null;
+      }
+
       const now = new Date();
       const diffMs = date.getTime() - now.getTime();
       
