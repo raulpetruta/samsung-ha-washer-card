@@ -40,8 +40,11 @@ class SamsungWasherCard extends HTMLElement {
     // Get all sensor data
     const sensorData = EntityHelpers.getAllSensorData(hass, this.config);
     
-    // Format completion time
-    const formattedCompletionTime = Formatters.formatCompletionTime(sensorData.completionTime);
+    // Format completion time - explicit check for config
+    let formattedCompletionTime = null;
+    if (this.config.completion_time_entity) {
+      formattedCompletionTime = Formatters.formatCompletionTime(sensorData.completionTime);
+    }
     
     // Determine status classes and animations
     const statusClass = Formatters.getStatusClass(sensorData.machineState);
