@@ -43,8 +43,8 @@ export class Formatters {
   }
 
   static formatCompletionTime(timeStr) {
-    if (timeStr === 'Unknown' || timeStr === 'unavailable') {
-      return 'Unknown';
+    if (!timeStr || timeStr === 'Unknown' || timeStr === 'unavailable') {
+      return null;
     }
     
     try {
