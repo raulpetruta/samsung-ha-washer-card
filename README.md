@@ -1,3 +1,14 @@
+> [!WARNING]
+> ## This project is no longer maintained.
+>
+> Due to Samsung's recent SmartThings API monetization decisions, I have decided to discontinue development and support for this project.
+>
+> As someone who values open-source software and actively contributes to open-source projects, I cannot support this direction. Because of that, I will no longer develop or maintain software related to Samsung SmartThings.
+>
+> 📺 **Watch the video posted by Louis Rossmann:** https://www.youtube.com/watch?v=V5q4xWf4h80
+>
+> 📖 **Read more:** https://consumerrights.wiki/w/Samsung_SmartThings_API_monetization
+
 # Samsung Washer Card
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
