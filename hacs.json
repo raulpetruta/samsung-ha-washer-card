@@ -3,7 +3,5 @@
   "hacs": "2.0.5",
   "render_readme": true,
   "content_in_root": false,
-  "filename": "samsung-ha-washer-card.js",
-  "domains": ["sensor", "binary_sensor", "switch", "select", "number"],
-  "iot_class": "Local Polling"
+  "filename": "samsung-ha-washer-card.js"
 }

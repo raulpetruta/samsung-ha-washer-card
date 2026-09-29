@@ -1,7 +1,7 @@
 # Samsung Washer Card
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/raulpetruta/samsung-ha-washer-card)](https://github.com/raulpetruta/samsung-ha-washer-card)
+[![GitHub release](https://img.shields.io/github/v/release/raulpetruta/samsung-ha-washer-card?sort=date&display_name=tag)](https://github.com/raulpetruta/samsung-ha-washer-card/releases/latest)
 
 A beautiful, animated Home Assistant card for Samsung washing machines. It reads entities from Home Assistant and does not call Samsung's cloud API.
 
@@ -63,27 +63,37 @@ If the card stays empty, check that the LocalThings entities are not `unavailabl
 
 ## Installation
 
+This is a **dashboard card**, not a Home Assistant integration or add-on. It does not appear as its own page in the sidebar. After it is installed, edit a dashboard, choose **Add card**, and search for **Samsung Washer Card**.
+
+Restarting Home Assistant does not load a new dashboard file. Reload the browser page after you add the resource.
+
 ### HACS (Recommended)
 
-1. Open HACS in your Home Assistant
-2. Go to the 3 dots on top right
-3. Click "Custom repositories"
-4. For "Repository", add "https://github.com/raulpetruta/samsung-ha-washer-card"
-5. For "Type", choose "Dashboard"
-6. Click "Add"
-7. Search for "Samsung Washer Card"
-8. Click the Download button and install it
-9. After the installation is done, click "Reload" as prompted
+The repository type must be **Dashboard**.
+
+If you choose **Integration**, HACS rejects the repository. The message says it is not a valid integration, or that it looks like an app repository and HACS does not manage apps. There is no app or custom integration in this repository to install.
+
+1. Open HACS
+2. Open the three-dot menu and choose **Custom repositories**
+3. Repository: `https://github.com/raulpetruta/samsung-ha-washer-card`
+4. Category: **Dashboard**
+5. Add the repository, search for **Samsung Washer Card**, and download it
+6. When HACS asks, reload the browser
 
 ### Manual Installation
 
-1. Download `samsung-ha-washer-card.js` from the [latest release](https://github.com/raulpetruta/samsung-ha-washer-card)
-2. Copy to `/config/www/samsung-washer-card/samsung-ha-washer-card.js`
-3. Add to your Lovelace resources:
+1. Download [`dist/samsung-ha-washer-card.js`](https://github.com/raulpetruta/samsung-ha-washer-card/blob/main/dist/samsung-ha-washer-card.js) from the repository. The [release page](https://github.com/raulpetruta/samsung-ha-washer-card/releases/latest) source archive contains the same file in the `dist` folder.
+2. In the Home Assistant file editor, create `config/www/samsung-ha-washer-card/` and save the file there as `samsung-ha-washer-card.js`.
+3. Go to **Settings → Dashboards → three-dot menu → Resources → Add resource**
+   - URL: `/local/samsung-ha-washer-card/samsung-ha-washer-card.js`
+   - Resource type: **JavaScript module**
+4. Reload the browser. Then edit a dashboard and add **Samsung Washer Card**.
+
+The folder name in `config/www` and the `/local/...` URL must match. If the card still does not appear, open the browser developer tools and confirm that resource URL returns the JavaScript file rather than a 404.
 
 ```yaml
 resources:
-  - url: /local/samsung-washer-card/samsung-ha-washer-card.js
+  - url: /local/samsung-ha-washer-card/samsung-ha-washer-card.js
     type: module
 ```
 

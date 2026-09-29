@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-09-29
+
+### Fixed
+
+- **Installation**: The README now says to add the repository in HACS as a **Dashboard**, not an Integration. Choosing Integration produces the “not a valid app repository” error, because this project is a card and not a Home Assistant app. Manual install steps now use one folder name and say to reload the browser, since a Home Assistant restart does not load a new dashboard resource.
+
 ## [2.0.0] - 2026-09-29
 
 ### Added
