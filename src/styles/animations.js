@@ -182,8 +182,78 @@ export const animationStyles = `
   }
 
   /* Animations */
-  .washing-machine.dryer .water {
-    display: none;
+  /* Dryer: warm door, tumbling clothes, rising heat, and a vent. */
+  .washing-machine.dryer .machine-door {
+    border-color: rgb(255, 152, 64);
+    background: rgba(255, 152, 64, 0.1);
+  }
+
+  .washing-machine.dryer .drum {
+    border-color: rgba(255, 152, 64, 0.55);
+  }
+
+  .washing-machine.dryer .drum::before,
+  .washing-machine.dryer .drum::after {
+    border-radius: 2px;
+    background: rgb(255, 167, 38);
+  }
+
+  .washing-machine.dryer .drum::before {
+    width: 14px;
+    height: 5px;
+    top: 10px;
+    left: 12px;
+  }
+
+  .washing-machine.dryer .drum::after {
+    width: 11px;
+    height: 4px;
+    bottom: 11px;
+    right: 10px;
+  }
+
+  .heat {
+    position: absolute;
+    left: 16%;
+    right: 16%;
+    bottom: 6px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(255, 167, 38, 0.85), rgba(255, 167, 38, 0));
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .vent {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    width: 26px;
+    height: 7px;
+    transform: translateX(-50%);
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 152, 64, 0.9) 0 1px,
+      transparent 1px 3px
+    );
+  }
+
+  .washing-machine.dryer.running .drum {
+    animation-duration: 3.4s;
+  }
+
+  .washing-machine.dryer.running .heat {
+    animation: heatRise 1.8s ease-out infinite;
+  }
+
+  .washing-machine.dryer.running .heat-late {
+    animation-delay: 0.9s;
+  }
+
+  @keyframes heatRise {
+    0% { transform: translateY(6px) scaleX(0.6); opacity: 0; }
+    25% { opacity: 0.9; }
+    100% { transform: translateY(-34px) scaleX(1.2); opacity: 0; }
   }
 
   .running .drum {

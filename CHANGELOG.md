@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Dryer mode**: Set Appliance to Dryer. The card treats `run`, `pause`, and `stop` as the machine state, and uses the job stage (`drying`, `cooling`, and the other dryer stages) when LocalThings progress is absent.
 - **Wrinkle prevent and dry level**: Shown by default on a dryer. LocalThings keys `wrinkle_prevent` and `dry_level` are found automatically. Legacy dryers use `switch.{device}_wrinkle_prevent`, with `binary_sensor.{device}_wrinkle_prevent_active` as a fallback.
-- Dryer mode hides bubble soak, detergent, rinse, spin, and water temperature unless those switches are turned on. The drum spins without the water graphic, and the default icon is a tumble dryer.
+- Dryer mode hides bubble soak, detergent, rinse, spin, and water temperature unless those switches are turned on. The drum tumbles more slowly, with heat and a vent instead of water, and the default icon is a tumble dryer.
 
 ## [2.0.1] - 2026-09-29
 
