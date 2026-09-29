@@ -3,10 +3,14 @@ export function createSensorsGrid(sensorData) {
   const {
     completionTime,
     energy,
+    energyUnit,
     waterConsumption,
+    waterUnit,
     powerBinary,
     power,
+    powerUnit,
     energySaved,
+    energySavedUnit,
     jobState
   } = sensorData;
 
@@ -25,11 +29,11 @@ export function createSensorsGrid(sensorData) {
   return `
     <div class="sensors-grid">
       ${createCard('⏱️', 'Completion Time', completionTime)}
-      ${createCard('⚡', 'Energy Used', energy, 'kWh')}
-      ${createCard('💧', 'Water Used', waterConsumption, 'L')}
+      ${createCard('⚡', 'Energy Used', energy, energyUnit)}
+      ${createCard('💧', 'Water Used', waterConsumption, waterUnit)}
       ${createCard('🔌', 'Power Status', powerBinary)}
-      ${createCard('⚡', 'Current Power', power, 'W')}
-      ${createCard('💚', 'Energy Saved', energySaved, 'kWh')}
+      ${createCard('⚡', 'Current Power', power, powerUnit)}
+      ${createCard('💚', 'Energy Saved', energySaved, energySavedUnit)}
       ${createCard('👁️', 'Job State', jobState)}
     </div>
   `;
