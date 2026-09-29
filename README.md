@@ -5,35 +5,61 @@
 
 A beautiful, animated Home Assistant card for Samsung washing machines. It reads entities from Home Assistant and does not call Samsung's cloud API.
 
-Use [LocalThings](https://github.com/mbillow/localthings) to connect the washer on your local network. Existing dashboards that still use the old SmartThings entity names keep working.
+> [!IMPORTANT]
+> Samsung's paid SmartThings API is a greedy charge for hardware people already own. This project does not use that API.
+>
+> The washer is connected on your local network with [LocalThings](https://github.com/mbillow/localthings). This card only shows the entities Home Assistant already has.
+>
+> 📺 **Louis Rossmann on the SmartThings API change:** https://www.youtube.com/watch?v=V5q4xWf4h80
+>
+> 📖 **Background:** https://consumerrights.wiki/w/Samsung_SmartThings_API_monetization
+
+Existing dashboards that still use the old SmartThings entity names keep working.
 
 ## Connect the washer
 
-1. Install [LocalThings](https://github.com/mbillow/localthings) from HACS (Integrations). It is in the default list.
-2. Restart Home Assistant, then go to **Settings > Devices & Services > Add Integration > LocalThings**.
-3. Enter the washer's IP address. LocalThings adds one device and its sensors and controls.
-4. Add this card and pick any entity from that washer. The card finds the rest on the same device.
+This card does not talk to the washer. [LocalThings](https://github.com/mbillow/localthings) does that on your local network, then the card reads the entities it creates.
+
+1. Set the washer up in the SmartThings app once so it joins your Wi-Fi. Keep it registered there. Removing it can wipe the Wi-Fi settings the next time the washer reaches Samsung.
+2. Find the washer's IP address in your router, or in the SmartThings app. A DHCP reservation keeps that address stable.
+3. In HACS, open **Integrations**, search for **LocalThings**, and download it. It is in the default list, so you do not add a custom repository. Restart Home Assistant.
+
+   [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=mbillow&repository=localthings&category=integration)
+
+4. Go to **Settings > Devices & Services > Add Integration > LocalThings** and enter the washer's IP. LocalThings reads the model and creates one device with sensors and controls.
+5. Add this card to a dashboard and pick **any** entity from that washer. The card finds machine state, cycle, finish time, energy, water, and the wash controls on the same device.
+
+The first appliance contacts Samsung once, with no account, to read a public identifier. Later appliances only need an IP.
+
+Two cases need one extra step:
+
+- Some machines refuse the automatic certificate and ask for a pre-shared key. See [LocalThings credential acquisition](https://github.com/mbillow/localthings/blob/main/docs/credential-acquisition.md).
+- Some older washers, including certain WW6500 models, use TCP port 8888 and ask for a device token. Leave the token empty, turn **Remote Control** on with the door closed, and let the washer reach Home Assistant on port 8889.
+
+If the card stays empty, check that the LocalThings entities are not `unavailable`, that the washer is on the same network as Home Assistant, and that nothing else is holding the washer's local connection. An appliance accepts one connection at a time.
 
 ## Features
 
 🎨 **Modern Design**
-- Beautiful appliance-inspired color scheme
-- Automatic light/dark mode support
-- Smooth animations and hover effects
+- Appliance-inspired layout with automatic light and dark mode
+- Smooth drum animation and hover states
 
-🔄 **Animated Washing Machine**
-- Color-coded status light (Aqua/Green/Amber)
+🔄 **Live status**
+- Cycle name on the badge, with the wash stage when the machine only reports `active`
+- Color-coded light for running, paused, idle, and recently completed
+- The completed light stays on after LocalThings clears the finish-time sensor
 
-📊 **Rich Information Display**
-- Energy consumption and water usage
-- Completion time with smart formatting
-- All sensor data in organized grid layout
-- Configuration and control status
+📊 **Sensors and controls**
+- Finish time, energy, water, power, and job state
+- Child lock, remote control, bubble soak, detergent, rinse, spin, and wash temperature
+- Each control can be hidden from the card editor
+- Sensor units come from the entity. Numeric spin shows `RPM`, and a numeric temperature shows `°C`
 
-⚙️ **Highly Configurable**
-- Custom device names
-- Configurable icons (emoji or MDI)
-- Adjustable completion status duration
+⚙️ **Configurable**
+- Pick any entity from the washer. LocalThings siblings are found automatically
+- Optional entity overrides when you want a different sensor
+- Header icon as an emoji or an MDI icon
+- How long the completed light stays on
 
 ## Installation
 
@@ -66,11 +92,12 @@ resources:
 ### Visual Editor (Recommended)
 
 1. Add the card to your dashboard
-2. Click "Configure" or the edit button
-3. Pick any entity that belongs to the washer
+2. Click **Configure** or the edit button
+3. Set **Washer Entity** to any entity from the washer
 4. Set the icon and how long the completed light stays on
+5. Turn off **Show Child Lock**, **Show Water Temperature**, or any other **Show …** switch to hide that control
 
-LocalThings entities on that same device are filled in automatically. You can still override individual sensors if you want a different one, or leave a sensor empty to hide it.
+LocalThings entities on that same device are filled in automatically. You can still pick a different entity for energy, water, power, cycle, or temperature. Leave a sensor field empty to hide that tile.
 
 ### Manual Configuration
 
@@ -83,6 +110,8 @@ type: custom:samsung-washer-card
 device_name: sensor.washer_machine_state
 icon: "mdi:washing-machine"
 complete_status_for_x_hours: 2
+show_bubble_soak: false
+show_detergent: false
 ```
 
 #### Legacy SmartThings names
@@ -127,7 +156,7 @@ From a LocalThings washer, the card matches these translation keys on the select
 - Machine state, progress, and cycle (`machine_state`, `progress`, `washer_cycle`)
 - Finish time (`finish_time`)
 - Energy, power, and water (`energy_kwh`, `energy_saved_kwh`, `power_watts`, `water_liters`, `power_switch`)
-- Child lock, remote control, bubble soak, detergent dose, rinse count, spin speed, and wash temperature
+- Child lock, remote control, bubble soak, detergent, rinse, spin (`spin_speed`), and wash temperature (`wash_temperature`)
 
 Child lock uses Home Assistant's lock polarity: `on` means unlocked. Spin values get an `RPM` suffix only when they are numeric. Sensor units come from the entity.
 
@@ -191,9 +220,7 @@ icon: "🧺"
 ### Setup Card View
 ![Setup Card View](screenshots/setup-view.png)
 
-You can now customize which information cards appear in the grid:
-- **Manual Selection**: Choose the exact entity for each sensor (Energy, Water, Power, etc.) from the dropdown menus.
-- **Hide Unused**: Leave a field empty if you don't want to show that specific card. The grid will automatically adjust to hide unconfigured sensors.
+Sensor tiles that you leave empty stay hidden. Controls stay visible until you turn off their **Show …** switch.
 
 ## Development
 
