@@ -59,13 +59,22 @@ class SamsungWasherCard extends HTMLElement {
       jobState: Formatters.formatStage(sensorData.jobState)
     };
 
+    const shown = (key) => this.config[key] !== false;
     const controlsData = {
+      showChildLock: shown('show_child_lock'),
+      showRemoteControl: shown('show_remote_control'),
+      showBubbleSoak: shown('show_bubble_soak'),
+      showDetergent: shown('show_detergent'),
+      showRinseCycles: shown('show_rinse_cycles'),
+      showSpinLevel: shown('show_spin_level'),
+      showWaterTemperature: shown('show_water_temperature'),
       childLock: sensorData.childLock,
       remoteControl: sensorData.remoteControl,
       bubbleSoak: sensorData.bubbleSoak,
       detergentAmount: sensorData.detergentAmount,
       rinseCycles: sensorData.rinseCycles,
-      spinLevel: Formatters.formatSpin(sensorData.spinLevel)
+      spinLevel: Formatters.formatSpin(sensorData.spinLevel),
+      washTemperature: Formatters.formatTemperature(sensorData.washTemperature)
     };
 
     const statusText = Formatters.getStatusText(sensorData);
@@ -137,10 +146,10 @@ class SamsungWasherCard extends HTMLElement {
   // The rules for sizing your card in the grid in sections view
   getGridOptions() {
     return {
-      rows: 8,
+      rows: 10,
       columns: 12,
       min_rows: 8,
-      max_rows: 8,
+      max_rows: 12,
       min_columns: 12,
       max_columns: 12,
     };
@@ -272,6 +281,49 @@ class SamsungWasherCard extends HTMLElement {
           }
         },
         {
+          name: "water_temperature_entity",
+          selector: {
+            entity: {
+              domain: "select"
+            }
+          }
+        },
+        {
+          name: "show_child_lock",
+          default: true,
+          selector: { boolean: {} }
+        },
+        {
+          name: "show_remote_control",
+          default: true,
+          selector: { boolean: {} }
+        },
+        {
+          name: "show_bubble_soak",
+          default: true,
+          selector: { boolean: {} }
+        },
+        {
+          name: "show_detergent",
+          default: true,
+          selector: { boolean: {} }
+        },
+        {
+          name: "show_rinse_cycles",
+          default: true,
+          selector: { boolean: {} }
+        },
+        {
+          name: "show_spin_level",
+          default: true,
+          selector: { boolean: {} }
+        },
+        {
+          name: "show_water_temperature",
+          default: true,
+          selector: { boolean: {} }
+        },
+        {
           name: "icon",
           selector: {
             icon: {}
@@ -301,6 +353,14 @@ class SamsungWasherCard extends HTMLElement {
           energy_saved_entity: "Energy Saved Sensor",
           job_state_entity: "Job State Sensor",
           program_entity: "Program/Cycle Select",
+          water_temperature_entity: "Water Temperature Select",
+          show_child_lock: "Show Child Lock",
+          show_remote_control: "Show Remote Control",
+          show_bubble_soak: "Show Bubble Soak",
+          show_detergent: "Show Detergent",
+          show_rinse_cycles: "Show Rinse Cycles",
+          show_spin_level: "Show Spin Level",
+          show_water_temperature: "Show Water Temperature",
           icon: "Card Icon",
           complete_status_for_x_hours: "Completed Status Duration"
         };
@@ -310,7 +370,9 @@ class SamsungWasherCard extends HTMLElement {
         const helpers = {
           device_name: "Pick any entity from the washer. LocalThings siblings are found automatically.",
           icon: "Icon to display in the card header (emoji or mdi:icon-name)",
-          complete_status_for_x_hours: "Hours to show green 'completed' status after washing is done"
+          complete_status_for_x_hours: "Hours to show green 'completed' status after washing is done",
+          water_temperature_entity: "Optional. LocalThings wash temperature is found automatically.",
+          show_child_lock: "Hide a control by turning its switch off. Hidden controls stay available to the washer."
         };
         return helpers[schema.name];
       },

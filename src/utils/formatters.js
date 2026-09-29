@@ -70,6 +70,13 @@ export class Formatters {
     return /^-?\d+(\.\d+)?$/.test(text) ? `${text} RPM` : text;
   }
 
+  static formatTemperature(value) {
+    if (value == null || value === '') return '—';
+    const text = String(value).trim();
+    if (text.includes('°')) return text;
+    return /^-?\d+(\.\d+)?$/.test(text) ? `${text}°C` : text;
+  }
+
   static getIconHtml(icon) {
     return icon.includes(':')
       ? `<ha-icon icon="${icon}"></ha-icon>`

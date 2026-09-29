@@ -102,7 +102,7 @@ export const responsiveStyles = `
   
   .controls-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 6px;
     margin-top: 8px;
   }
@@ -160,6 +160,11 @@ export const responsiveStyles = `
     font-size: 12px;
     color: var(--primary-text-color, rgb(55, 65, 81));
     flex: 1;
+    min-width: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
   @media (prefers-color-scheme: dark) {
@@ -173,6 +178,8 @@ export const responsiveStyles = `
     font-size: 12px;
     color: var(--accent-color, rgb(0, 174, 199));
     text-align: right;
+    flex-shrink: 0;
+    margin-left: 6px;
   }
   
   @media (prefers-color-scheme: dark) {

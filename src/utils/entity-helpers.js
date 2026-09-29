@@ -113,6 +113,13 @@ const SLOT_DEFS = {
     legacySuffix: 'spin_level',
     legacyDomain: 'select',
   },
+  washTemperature: {
+    keys: ['wash_temperature', 'water_temperature'],
+    domains: ['select'],
+    legacySuffix: 'water_temperature',
+    legacyDomain: 'select',
+    configKey: 'water_temperature_entity',
+  },
 };
 
 function isUsableState(state) {
@@ -257,6 +264,7 @@ export class EntityHelpers {
       detergentAmount: this.getState(hass, resolve('detergent')),
       rinseCycles: this.getState(hass, resolve('rinseCycles')),
       spinLevel: this.getState(hass, resolve('spinLevel')),
+      washTemperature: this.getState(hass, resolve('washTemperature')),
     };
   }
 }

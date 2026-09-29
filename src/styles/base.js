@@ -41,8 +41,6 @@ export const baseStyles = `
   
   .card-content {
     padding: 16px;
-    overflow-y: auto;
-    max-height: 100%;
   }
 
   .washer-header {

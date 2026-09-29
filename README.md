@@ -111,6 +111,14 @@ complete_status_for_x_hours: 2
 | `power_entity` | string | auto | Current power sensor |
 | `power_binary_entity` | string | auto | Power on/off sensor |
 | `job_state_entity` | string | auto | Cycle stage sensor |
+| `water_temperature_entity` | string | auto | Wash temperature select |
+| `show_child_lock` | boolean | `true` | Show the child lock control |
+| `show_remote_control` | boolean | `true` | Show the remote control status |
+| `show_bubble_soak` | boolean | `true` | Show bubble soak |
+| `show_detergent` | boolean | `true` | Show detergent dose |
+| `show_rinse_cycles` | boolean | `true` | Show rinse cycles |
+| `show_spin_level` | boolean | `true` | Show spin speed |
+| `show_water_temperature` | boolean | `true` | Show wash temperature |
 
 ## What the card shows
 
@@ -119,7 +127,7 @@ From a LocalThings washer, the card matches these translation keys on the select
 - Machine state, progress, and cycle (`machine_state`, `progress`, `washer_cycle`)
 - Finish time (`finish_time`)
 - Energy, power, and water (`energy_kwh`, `energy_saved_kwh`, `power_watts`, `water_liters`, `power_switch`)
-- Child lock, remote control, bubble soak, detergent dose, rinse count, and spin speed
+- Child lock, remote control, bubble soak, detergent dose, rinse count, spin speed, and wash temperature
 
 Child lock uses Home Assistant's lock polarity: `on` means unlocked. Spin values get an `RPM` suffix only when they are numeric. Sensor units come from the entity.
 
@@ -145,6 +153,7 @@ If the card cannot see a device registry entry, it still looks up the old SmartT
 - `switch.{device_name}_bubble_soak`
 - `select.{device_name}_detergent_dispense_amount`
 - `select.{device_name}_spin_level`
+- `select.{device_name}_water_temperature`
 - `number.{device_name}_rinse_cycles`
 
 ## Examples

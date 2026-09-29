@@ -34,6 +34,7 @@ test('legacy prefix still finds SmartThings object ids and does not invent missi
       'sensor.washing_machine_completion_time': state('2026-09-29T18:00:00.000Z'),
       'sensor.washing_machine_energy': state('1.2'),
       'select.washing_machine_spin_level': state('1400'),
+      'select.washing_machine_water_temperature': state('40'),
       'binary_sensor.washing_machine_child_lock': state('on'),
     },
   };
@@ -45,6 +46,7 @@ test('legacy prefix still finds SmartThings object ids and does not invent missi
   assert.equal(data.energy, '1.2');
   assert.equal(data.energyUnit, 'kWh');
   assert.equal(data.spinLevel, '1400');
+  assert.equal(data.washTemperature, '40');
   assert.equal(data.childLock, 'On');
   assert.equal(data.detergentAmount, null);
   assert.equal(data.rinseCycles, null);
@@ -79,6 +81,7 @@ test('LocalThings siblings resolve by translation key, including course-table cy
     'select.washer_spin': { device_id: deviceId, translation_key: 'spin_speed', platform: 'localthings' },
     'select.washer_rinse': { device_id: deviceId, translation_key: 'rinse_cycles', platform: 'localthings' },
     'select.washer_detergent': { device_id: deviceId, translation_key: 'detergent_quantity', platform: 'localthings' },
+    'select.washer_temperature': { device_id: deviceId, translation_key: 'wash_temperature', platform: 'localthings' },
   };
   const hass = {
     entities,
@@ -97,6 +100,7 @@ test('LocalThings siblings resolve by translation key, including course-table cy
       'select.washer_spin': state('No Spin'),
       'select.washer_rinse': state('2'),
       'select.washer_detergent': state('Medium'),
+      'select.washer_temperature': state('30'),
     },
   };
 
@@ -115,6 +119,9 @@ test('LocalThings siblings resolve by translation key, including course-table cy
   assert.equal(data.spinLevel, 'No Spin');
   assert.equal(data.rinseCycles, '2');
   assert.equal(data.detergentAmount, 'Medium');
+  assert.equal(data.washTemperature, '30');
+  assert.equal(Formatters.formatTemperature('30'), '30°C');
+  assert.equal(Formatters.formatTemperature('Cold'), 'Cold');
   assert.equal(EntityHelpers.getDisplayName(hass, { device_name: 'sensor.washer_machine_state' }), 'Upstairs washer');
   assert.equal(Formatters.getActivity(data), 'running');
   assert.equal(Formatters.getStatusText(data), 'Cotton');

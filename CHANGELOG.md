@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **LocalThings**: Pick any entity from a LocalThings washer and the card finds machine state, progress, cycle, finish time, energy, water, and the wash controls on that device.
+- **Water temperature**: Shows the wash temperature from `select.{device}_water_temperature` or a LocalThings `wash_temperature` select.
+- **Control visibility**: Each item in Configuration & Controls can be hidden from the card editor.
 
 ### Changed
 

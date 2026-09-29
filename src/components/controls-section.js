@@ -1,13 +1,16 @@
 // Controls section component HTML generator
 export function createControlsSection(controlsData) {
-  const {
-    childLock,
-    remoteControl,
-    bubbleSoak,
-    detergentAmount,
-    rinseCycles,
-    spinLevel
-  } = controlsData;
+  const items = [
+    { show: controlsData.showChildLock, label: '🔒 Child Lock', value: controlsData.childLock },
+    { show: controlsData.showRemoteControl, label: '📱 Remote Control', value: controlsData.remoteControl },
+    { show: controlsData.showBubbleSoak, label: '🫧 Bubble Soak', value: controlsData.bubbleSoak },
+    { show: controlsData.showDetergent, label: '🧴 Detergent', value: controlsData.detergentAmount },
+    { show: controlsData.showRinseCycles, label: '🔄 Rinse Cycles', value: controlsData.rinseCycles },
+    { show: controlsData.showSpinLevel, label: '🌪️ Spin Level', value: controlsData.spinLevel },
+    { show: controlsData.showWaterTemperature, label: '🌡️ Temperature', value: controlsData.washTemperature },
+  ].filter((item) => item.show !== false);
+
+  if (!items.length) return '';
 
   const displayValue = (value) => (value == null || value === '' ? '—' : value);
 
@@ -16,35 +19,12 @@ export function createControlsSection(controlsData) {
       <div class="controls-title">Configuration & Controls</div>
       
       <div class="controls-grid">
+        ${items.map((item) => `
         <div class="control-item">
-          <span class="control-label">🔒 Child Lock</span>
-          <span class="control-value">${displayValue(childLock)}</span>
+          <span class="control-label">${item.label}</span>
+          <span class="control-value">${displayValue(item.value)}</span>
         </div>
-        
-        <div class="control-item">
-          <span class="control-label">📱 Remote Control</span>
-          <span class="control-value">${displayValue(remoteControl)}</span>
-        </div>
-        
-        <div class="control-item">
-          <span class="control-label">🫧 Bubble Soak</span>
-          <span class="control-value">${displayValue(bubbleSoak)}</span>
-        </div>
-        
-        <div class="control-item">
-          <span class="control-label">🧴 Detergent</span>
-          <span class="control-value">${displayValue(detergentAmount)}</span>
-        </div>
-        
-        <div class="control-item">
-          <span class="control-label">🔄 Rinse Cycles</span>
-          <span class="control-value">${displayValue(rinseCycles)}</span>
-        </div>
-        
-        <div class="control-item">
-          <span class="control-label">🌪️ Spin Level</span>
-          <span class="control-value">${displayValue(spinLevel)}</span>
-        </div>
+        `).join('')}
       </div>
     </div>
   `;
