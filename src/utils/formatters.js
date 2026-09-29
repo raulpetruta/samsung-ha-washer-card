@@ -15,10 +15,21 @@ const IN_CYCLE_STAGES = new Set([
   'delaywash',
   'delay wash',
   'soak',
+  'cooling',
+  'refreshing',
+  'wrinkle prevent',
+  'dehumidifying',
+  'ai drying',
+  'sanitizing',
+  'internal care',
+  'freeze protection',
+  'continuous dehumidifying',
+  'thawing frozen inside',
 ]);
 
 const PAUSED_STATES = new Set(['pause', 'paused']);
 const FINISHED_STAGES = new Set(['finish', 'finished']);
+const MACHINE_COMMANDS = new Set(['run', 'stop', 'pause', 'paused', 'start', 'active', 'idle']);
 
 export class Formatters {
   static formatDeviceName(deviceName) {
@@ -83,18 +94,31 @@ export class Formatters {
       : icon;
   }
 
+  static stageOf(sensorData) {
+    return this.normalizeState(sensorData?.progress || sensorData?.jobState);
+  }
+
+  static isRunningState(state) {
+    return state === 'run' || state === 'running' || state === 'active'
+      || state.includes('running') || state.includes('wash');
+  }
+
+  static isStoppedState(state) {
+    return state === 'stop' || state === 'stopped' || state.includes('stopped');
+  }
+
   static isFinishedStage(progress) {
     return FINISHED_STAGES.has(this.normalizeState(progress));
   }
 
   static getActivity(sensorData) {
     const state = this.normalizeState(sensorData?.machineState);
-    const stage = this.normalizeState(sensorData?.progress);
+    const stage = this.stageOf(sensorData);
 
     if (PAUSED_STATES.has(state) || PAUSED_STATES.has(stage)) return 'paused';
     if (FINISHED_STAGES.has(stage)) return 'idle';
     if (IN_CYCLE_STAGES.has(stage)) return 'running';
-    if (state === 'active' || state.includes('running') || state.includes('wash')) return 'running';
+    if (this.isRunningState(state)) return 'running';
     if (sensorData?.cycleActive === true) return 'running';
     return 'idle';
   }
@@ -102,7 +126,7 @@ export class Formatters {
   static getStatusClass(activity, machineState, progress) {
     if (activity === 'running') return 'status-running';
     if (activity === 'paused') return 'status-paused';
-    if (this.isFinishedStage(progress) || this.normalizeState(machineState).includes('stopped')) {
+    if (this.isFinishedStage(progress) || this.isStoppedState(this.normalizeState(machineState))) {
       return 'status-stopped';
     }
     return 'status-idle';
@@ -122,12 +146,13 @@ export class Formatters {
 
   static getStatusText(sensorData) {
     const program = sensorData?.washerSelect;
-    if (program && program !== 'Unknown') return program;
+    const programKey = this.normalizeState(program);
+    if (program && program !== 'Unknown' && !MACHINE_COMMANDS.has(programKey)) return program;
 
-    const state = this.normalizeState(sensorData?.machineState);
-    const stage = sensorData?.progress;
+    const stage = sensorData?.progress || sensorData?.jobState;
     const stageKey = this.normalizeState(stage);
-    const machineIsGeneric = !state || state === 'active' || state === 'unknown' || state === 'idle';
+    const state = this.normalizeState(sensorData?.machineState);
+    const machineIsGeneric = !state || MACHINE_COMMANDS.has(state) || state === 'unknown' || state === 'ready';
     if (machineIsGeneric && stageKey && stageKey !== 'none' && stageKey !== 'unknown' && stageKey !== 'idle') {
       return this.formatStage(stage);
     }

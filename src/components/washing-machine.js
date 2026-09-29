@@ -1,7 +1,8 @@
 // Washing machine component HTML generator
-export function createWashingMachine(animationClass, statusLightClass) {
+export function createWashingMachine(animationClass, statusLightClass, options = {}) {
+  const machineClass = options.hideWater ? `${animationClass} dryer` : animationClass;
   return `
-    <div class="washing-machine ${animationClass}">
+    <div class="washing-machine ${machineClass}">
       <div class="machine-body">
         <div class="machine-door">
           <div class="drum"></div>

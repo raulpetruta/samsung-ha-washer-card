@@ -8,6 +8,8 @@ export function createControlsSection(controlsData) {
     { show: controlsData.showRinseCycles, label: '🔄 Rinse Cycles', value: controlsData.rinseCycles },
     { show: controlsData.showSpinLevel, label: '🌪️ Spin Level', value: controlsData.spinLevel },
     { show: controlsData.showWaterTemperature, label: '🌡️ Temperature', value: controlsData.washTemperature },
+    { show: controlsData.showWrinklePrevent, label: '👕 Wrinkle Prevent', value: controlsData.wrinklePrevent },
+    { show: controlsData.showDryLevel, label: '💨 Dry Level', value: controlsData.dryLevel },
   ].filter((item) => item.show !== false);
 
   if (!items.length) return '';
