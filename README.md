@@ -135,11 +135,32 @@ icon: "mdi:washing-machine"
 complete_status_for_x_hours: 2
 ```
 
+#### Dryer
+
+Set `appliance` to `dryer`. Washer-only controls stay hidden unless you turn their **Show …** switch on. Wrinkle prevent and dry level show when the dryer reports them.
+
+```yaml
+type: custom:samsung-washer-card
+device_name: dryer
+appliance: dryer
+```
+
+A legacy dryer is usually:
+
+- `sensor.dryer_machine_state` with `run`, `pause`, or `stop`
+- `sensor.dryer_job_state` for the stage, such as `drying` or `cooling`
+- `sensor.dryer_completion_time`
+- `binary_sensor.dryer_child_lock` and `binary_sensor.dryer_remote_control`
+- `switch.dryer_wrinkle_prevent`
+
+LocalThings dryers are found the same way as washers: pick any entity on the dryer. The card also matches `dryer_cycle` and `dry_level`.
+
 ## Configuration Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `device_name` | string | **Required** | Any washer entity id, or a legacy device prefix |
+| `device_name` | string | **Required** | Any washer or dryer entity id, or a legacy device prefix |
+| `appliance` | string | `washer` | `washer` or `dryer` |
 | `icon` | string | `🧺` | Icon for the card header (emoji or `mdi:icon-name`) |
 | `complete_status_for_x_hours` | number | `2` | Hours to show the green completed light after the cycle ends |
 | `program_entity` | string | auto | Cycle select. Overrides automatic detection |
@@ -157,7 +178,9 @@ complete_status_for_x_hours: 2
 | `show_detergent` | boolean | `true` | Show detergent dose |
 | `show_rinse_cycles` | boolean | `true` | Show rinse cycles |
 | `show_spin_level` | boolean | `true` | Show spin speed |
-| `show_water_temperature` | boolean | `true` | Show wash temperature |
+| `show_water_temperature` | boolean | `true` on a washer | Show wash temperature. Hidden on a dryer unless turned on |
+| `show_wrinkle_prevent` | boolean | `true` on a dryer | Show wrinkle prevent. Hidden on a washer unless turned on |
+| `show_dry_level` | boolean | `true` on a dryer | Show dry level. Hidden on a washer unless turned on |
 
 ## What the card shows
 

@@ -29,20 +29,22 @@ class SamsungWasherCard extends HTMLElement {
     }
 
     const sensorData = EntityHelpers.getAllSensorData(hass, this.config);
+    const stage = sensorData.progress || sensorData.jobState;
     const activity = Formatters.getActivity(sensorData);
     const isRecentlyCompleted = this.isRecentlyCompleted(sensorData, activity);
     const completionSource = sensorData.completionTime
       || (isRecentlyCompleted ? this._lastFinishTime : null);
     const formattedCompletionTime = Formatters.formatCompletionTime(completionSource);
 
-    const statusClass = Formatters.getStatusClass(activity, sensorData.machineState, sensorData.progress);
+    const statusClass = Formatters.getStatusClass(activity, sensorData.machineState, stage);
     const animationClass = Formatters.getAnimationClass(activity, isRecentlyCompleted);
     const statusLightClass = Formatters.getStatusLightClass(activity, isRecentlyCompleted);
 
     const legacyName = Formatters.formatDeviceName(EntityHelpers.getLegacyPrefix(this.config) || 'washer');
     const deviceDisplayName = EntityHelpers.getDisplayName(hass, this.config) || legacyName;
+    const isDryer = this.config.appliance === 'dryer';
     
-    const washerIcon = this.config.icon || '🧺';
+    const washerIcon = this.config.icon || (isDryer ? 'mdi:tumble-dryer' : '🧺');
     const iconHtml = Formatters.getIconHtml(washerIcon);
 
     const sensorsGridData = {
@@ -59,7 +61,7 @@ class SamsungWasherCard extends HTMLElement {
       jobState: Formatters.formatStage(sensorData.jobState)
     };
 
-    const shown = (key) => this.config[key] !== false;
+    const shown = (key) => SamsungWasherCard.isControlShown(this.config, key);
     const controlsData = {
       showChildLock: shown('show_child_lock'),
       showRemoteControl: shown('show_remote_control'),
@@ -68,13 +70,17 @@ class SamsungWasherCard extends HTMLElement {
       showRinseCycles: shown('show_rinse_cycles'),
       showSpinLevel: shown('show_spin_level'),
       showWaterTemperature: shown('show_water_temperature'),
+      showWrinklePrevent: shown('show_wrinkle_prevent'),
+      showDryLevel: shown('show_dry_level'),
       childLock: sensorData.childLock,
       remoteControl: sensorData.remoteControl,
       bubbleSoak: sensorData.bubbleSoak,
       detergentAmount: sensorData.detergentAmount,
       rinseCycles: sensorData.rinseCycles,
       spinLevel: Formatters.formatSpin(sensorData.spinLevel),
-      washTemperature: Formatters.formatTemperature(sensorData.washTemperature)
+      washTemperature: Formatters.formatTemperature(sensorData.washTemperature),
+      wrinklePrevent: sensorData.wrinklePrevent,
+      dryLevel: sensorData.dryLevel
     };
 
     const statusText = Formatters.getStatusText(sensorData);
@@ -93,7 +99,7 @@ class SamsungWasherCard extends HTMLElement {
             </div>
           </div>
 
-          ${createWashingMachine(animationClass, statusLightClass)}
+          ${createWashingMachine(animationClass, statusLightClass, { hideWater: isDryer })}
         </div>
         
         <div class="washer-right">
@@ -117,7 +123,7 @@ class SamsungWasherCard extends HTMLElement {
     this._finishWasLive = remembered.finishWasLive;
 
     if (activity === 'running' || activity === 'paused') return false;
-    if (Formatters.isFinishedStage(sensorData.progress)) return true;
+    if (Formatters.isFinishedStage(sensorData.progress || sensorData.jobState)) return true;
 
     const configuredHours = Number(this.config.complete_status_for_x_hours);
     const hours = Number.isFinite(configuredHours) && configuredHours > 0 ? configuredHours : 2;
@@ -126,6 +132,22 @@ class SamsungWasherCard extends HTMLElement {
       hours,
       now
     );
+  }
+
+  static isControlShown(config, key) {
+    if (config?.[key] === true) return true;
+    if (config?.[key] === false) return false;
+    const isDryer = config?.appliance === 'dryer';
+    const washerOnly = new Set([
+      'show_bubble_soak',
+      'show_detergent',
+      'show_rinse_cycles',
+      'show_spin_level',
+      'show_water_temperature',
+    ]);
+    if (isDryer && washerOnly.has(key)) return false;
+    if (key === 'show_wrinkle_prevent' || key === 'show_dry_level') return isDryer;
+    return true;
   }
 
   // The user supplied configuration. Throw an exception and Home Assistant
@@ -158,15 +180,22 @@ class SamsungWasherCard extends HTMLElement {
   // Return the stub configuration for the card
   static getStubConfig(hass) {
     let defaultDeviceName = "";
+    let appliance = "washer";
     if (hass?.entities) {
       const localThingsEntity = Object.keys(hass.entities).find((entityId) => {
         const entry = hass.entities[entityId];
         const key = entry?.translation_key || '';
         return entry?.platform === 'localthings' && (
-          key === 'machine_state' || key === 'washer_cycle' || key.startsWith('washer_cycle_')
+          key === 'machine_state'
+          || key === 'washer_cycle' || key.startsWith('washer_cycle_')
+          || key === 'dryer_cycle' || key.startsWith('dryer_cycle_')
         );
       });
-      if (localThingsEntity) defaultDeviceName = localThingsEntity;
+      if (localThingsEntity) {
+        defaultDeviceName = localThingsEntity;
+        const key = hass.entities[localThingsEntity]?.translation_key || '';
+        if (key === 'dryer_cycle' || key.startsWith('dryer_cycle_')) appliance = "dryer";
+      }
     }
 
     if (!defaultDeviceName && hass?.states) {
@@ -174,14 +203,19 @@ class SamsungWasherCard extends HTMLElement {
         entity.startsWith('select.') &&
         (entity.toLowerCase().includes('wash') ||
          entity.toLowerCase().includes('washer') ||
+         entity.toLowerCase().includes('dryer') ||
          entity.toLowerCase().includes('laundry'))
       );
-      if (selectEntities.length > 0) defaultDeviceName = selectEntities[0];
+      if (selectEntities.length > 0) {
+        defaultDeviceName = selectEntities[0];
+        if (selectEntities[0].toLowerCase().includes('dryer')) appliance = "dryer";
+      }
     }
     
     return {
       device_name: defaultDeviceName,
-      icon: "🧺",
+      appliance,
+      icon: appliance === "dryer" ? "mdi:tumble-dryer" : "🧺",
       complete_status_for_x_hours: 2
     };
   }
@@ -192,6 +226,8 @@ class SamsungWasherCard extends HTMLElement {
     const currentEntityId = config?.device_name?.includes('.') 
       ? config.device_name 
       : (config?.device_name ? `select.${config.device_name}` : '');
+    const showWasherControls = config?.appliance !== 'dryer';
+    const showDryerControls = config?.appliance === 'dryer';
     
     return {
       schema: [
@@ -212,6 +248,18 @@ class SamsungWasherCard extends HTMLElement {
           },
           // This is a workaround to show the current value
           default: currentEntityId
+        },
+        {
+          name: "appliance",
+          default: "washer",
+          selector: {
+            select: {
+              options: [
+                { value: "washer", label: "Washer" },
+                { value: "dryer", label: "Dryer" }
+              ]
+            }
+          }
         },
         {
           name: "completion_time_entity",
@@ -300,27 +348,51 @@ class SamsungWasherCard extends HTMLElement {
         },
         {
           name: "show_bubble_soak",
-          default: true,
+          default: showWasherControls,
           selector: { boolean: {} }
         },
         {
           name: "show_detergent",
-          default: true,
+          default: showWasherControls,
           selector: { boolean: {} }
         },
         {
           name: "show_rinse_cycles",
-          default: true,
+          default: showWasherControls,
           selector: { boolean: {} }
         },
         {
           name: "show_spin_level",
-          default: true,
+          default: showWasherControls,
           selector: { boolean: {} }
         },
         {
           name: "show_water_temperature",
-          default: true,
+          default: showWasherControls,
+          selector: { boolean: {} }
+        },
+        {
+          name: "wrinkle_prevent_entity",
+          selector: {
+            entity: {}
+          }
+        },
+        {
+          name: "dry_level_entity",
+          selector: {
+            entity: {
+              domain: "select"
+            }
+          }
+        },
+        {
+          name: "show_wrinkle_prevent",
+          default: showDryerControls,
+          selector: { boolean: {} }
+        },
+        {
+          name: "show_dry_level",
+          default: showDryerControls,
           selector: { boolean: {} }
         },
         {
@@ -344,7 +416,8 @@ class SamsungWasherCard extends HTMLElement {
       ],
       computeLabel: (schema) => {
         const labels = {
-          device_name: "Washer Entity",
+          device_name: "Washer or Dryer Entity",
+          appliance: "Appliance",
           completion_time_entity: "Completion Time Sensor",
           energy_entity: "Energy Sensor",
           water_entity: "Water Consumption Sensor",
@@ -361,6 +434,10 @@ class SamsungWasherCard extends HTMLElement {
           show_rinse_cycles: "Show Rinse Cycles",
           show_spin_level: "Show Spin Level",
           show_water_temperature: "Show Water Temperature",
+          wrinkle_prevent_entity: "Wrinkle Prevent",
+          dry_level_entity: "Dry Level Select",
+          show_wrinkle_prevent: "Show Wrinkle Prevent",
+          show_dry_level: "Show Dry Level",
           icon: "Card Icon",
           complete_status_for_x_hours: "Completed Status Duration"
         };
@@ -368,7 +445,8 @@ class SamsungWasherCard extends HTMLElement {
       },
       computeHelper: (schema) => {
         const helpers = {
-          device_name: "Pick any entity from the washer. LocalThings siblings are found automatically.",
+          device_name: "Pick any entity from the washer or dryer. LocalThings siblings are found automatically.",
+          appliance: "Dryer mode hides wash-only controls and shows wrinkle prevent and dry level.",
           icon: "Icon to display in the card header (emoji or mdi:icon-name)",
           complete_status_for_x_hours: "Hours to show green 'completed' status after washing is done",
           water_temperature_entity: "Optional. LocalThings wash temperature is found automatically.",
@@ -388,7 +466,7 @@ window.customCards.push({
   type: "samsung-washer-card",
   name: "Samsung Washer Card",
   preview: true,
-  description: "A modern card for Samsung washing machines, including LocalThings",
+  description: "A modern card for Samsung washers and dryers, including LocalThings",
   documentationURL: "https://github.com/raulpetruta/samsung-ha-washer-card",
   configurable: true,
 });

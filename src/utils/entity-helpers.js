@@ -18,8 +18,8 @@ const SLOT_DEFS = {
     domains: ['binary_sensor'],
   },
   program: {
-    keys: ['washer_cycle', 'cycle'],
-    keyPrefix: 'washer_cycle',
+    keys: ['washer_cycle', 'dryer_cycle', 'cycle'],
+    keyPrefixes: ['washer_cycle', 'dryer_cycle'],
     domains: ['select'],
     configKey: 'program_entity',
   },
@@ -120,6 +120,24 @@ const SLOT_DEFS = {
     legacyDomain: 'select',
     configKey: 'water_temperature_entity',
   },
+  wrinklePrevent: {
+    keys: ['wrinkle_prevent'],
+    domains: ['switch', 'binary_sensor'],
+    preferDomain: 'switch',
+    legacySuffix: 'wrinkle_prevent',
+    legacyDomain: 'switch',
+    legacyFallbacks: [
+      { domain: 'binary_sensor', suffix: 'wrinkle_prevent_active' },
+    ],
+    configKey: 'wrinkle_prevent_entity',
+  },
+  dryLevel: {
+    keys: ['dry_level', 'washer_dry_level'],
+    domains: ['select'],
+    legacySuffix: 'dry_level',
+    legacyDomain: 'select',
+    configKey: 'dry_level_entity',
+  },
 };
 
 function isUsableState(state) {
@@ -129,8 +147,8 @@ function isUsableState(state) {
 function keyMatches(translationKey, slot) {
   if (!translationKey) return false;
   if (slot.keys?.includes(translationKey)) return true;
-  if (!slot.keyPrefix) return false;
-  return translationKey === slot.keyPrefix || translationKey.startsWith(`${slot.keyPrefix}_`);
+  const prefixes = slot.keyPrefixes || (slot.keyPrefix ? [slot.keyPrefix] : []);
+  return prefixes.some((prefix) => translationKey === prefix || translationKey.startsWith(`${prefix}_`));
 }
 
 export class EntityHelpers {
@@ -214,7 +232,12 @@ export class EntityHelpers {
     if (matched) return matched;
 
     if (slot.legacySuffix && slot.legacyDomain && prefix) {
-      return `${slot.legacyDomain}.${prefix}_${slot.legacySuffix}`;
+      const primary = `${slot.legacyDomain}.${prefix}_${slot.legacySuffix}`;
+      if (!slot.legacyFallbacks || hass?.states?.[primary]) return primary;
+      const fallback = slot.legacyFallbacks
+        .map((item) => `${item.domain}.${prefix}_${item.suffix}`)
+        .find((entityId) => hass?.states?.[entityId]);
+      return fallback || primary;
     }
     return null;
   }
@@ -265,6 +288,8 @@ export class EntityHelpers {
       rinseCycles: this.getState(hass, resolve('rinseCycles')),
       spinLevel: this.getState(hass, resolve('spinLevel')),
       washTemperature: this.getState(hass, resolve('washTemperature')),
+      wrinklePrevent: this.formatToggle(hass, resolve('wrinklePrevent')),
+      dryLevel: this.getState(hass, resolve('dryLevel')),
     };
   }
 }

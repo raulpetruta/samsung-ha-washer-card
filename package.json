@@ -1,6 +1,6 @@
 {
   "name": "samsung-washer-card",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "A beautiful, animated Home Assistant card for Samsung washing machines, including LocalThings",
   "main": "dist/samsung-ha-washer-card.js",
   "scripts": {

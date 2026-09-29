@@ -177,6 +177,45 @@ test('status follows LocalThings machine state and progress', () => {
   assert.equal(Formatters.getStatusLightClass('idle', true), 'completed');
 });
 
+test('a dryer run state and job stage drive the drum and badge', () => {
+  const hass = {
+    states: {
+      'sensor.dryer_machine_state': state('run'),
+      'sensor.dryer_job_state': state('drying'),
+      'switch.dryer_wrinkle_prevent': state('on'),
+      'binary_sensor.dryer_wrinkle_prevent_active': state('off'),
+    },
+  };
+  const data = EntityHelpers.getAllSensorData(hass, { device_name: 'dryer' });
+  assert.equal(data.machineState, 'run');
+  assert.equal(data.jobState, 'drying');
+  assert.equal(data.wrinklePrevent, 'On');
+  assert.equal(Formatters.getActivity(data), 'running');
+  assert.equal(Formatters.getStatusText(data), 'Drying');
+  assert.equal(Formatters.getStatusClass('idle', 'stop'), 'status-stopped');
+  assert.equal(Formatters.getActivity({ machineState: 'pause', jobState: 'drying' }), 'paused');
+  assert.equal(Formatters.getActivity({ machineState: 'stop', jobState: 'finished' }), 'idle');
+});
+
+test('LocalThings dryer cycle and dry level resolve on the same device', () => {
+  const deviceId = 'dryer-1';
+  const hass = {
+    entities: {
+      'sensor.dryer_machine_state': { device_id: deviceId, translation_key: 'machine_state' },
+      'select.dryer_cycle': { device_id: deviceId, translation_key: 'dryer_cycle_table_02' },
+      'select.dryer_dryness': { device_id: deviceId, translation_key: 'dry_level' },
+    },
+    states: {
+      'sensor.dryer_machine_state': state('active'),
+      'select.dryer_cycle': state('Cotton'),
+      'select.dryer_dryness': state('Extra Dry'),
+    },
+  };
+  const data = EntityHelpers.getAllSensorData(hass, { device_name: 'sensor.dryer_machine_state' });
+  assert.equal(data.washerSelect, 'Cotton');
+  assert.equal(data.dryLevel, 'Extra Dry');
+});
+
 test('a cleared future finish time becomes the completion moment once the cycle stops', () => {
   const now = Date.parse('2026-09-29T18:00:00.000Z');
   const whileRunning = Formatters.nextRememberedFinish({

@@ -182,6 +182,10 @@ export const animationStyles = `
   }
 
   /* Animations */
+  .washing-machine.dryer .water {
+    display: none;
+  }
+
   .running .drum {
     animation: spin 2s linear infinite;
   }
