@@ -1,7 +1,7 @@
 # Samsung Washer Card
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/raulpetruta/samsung-ha-washer-card)](https://github.com/raulpetruta/samsung-ha-washer-card)
+[![GitHub release](https://img.shields.io/github/v/release/raulpetruta/samsung-ha-washer-card?sort=date&display_name=tag)](https://github.com/raulpetruta/samsung-ha-washer-card/releases/latest)
 
 A beautiful, animated Home Assistant card for Samsung washing machines. It reads entities from Home Assistant and does not call Samsung's cloud API.
 
