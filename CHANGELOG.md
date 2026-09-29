@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-09-29
+
+### Added
+
+- **LocalThings**: Pick any entity from a LocalThings washer and the card finds machine state, progress, cycle, finish time, energy, water, and the wash controls on that device.
+- **Water temperature**: Shows the wash temperature from `select.{device}_water_temperature` or a LocalThings `wash_temperature` select.
+- **Control visibility**: Each item in Configuration & Controls can be hidden from the card editor.
+
+### Changed
+
+- The card is maintained again. It reads Home Assistant entities and does not call Samsung's cloud API.
+- Status and the drum animation understand LocalThings states (`active`, `pause`, and cycle progress such as wash, rinse, and spin).
+- The completed light remembers the last finish time after LocalThings clears that sensor.
+- Missing controls show a dash instead of placeholder values. Spin speed gains an `RPM` suffix only when the value is numeric. Sensor units come from the entity.
+- Child lock with the lock device class shows Locked or Unlocked.
+
+### Compatibility
+
+- Existing `device_name` prefixes such as `washing_machine` still resolve the old SmartThings entity ids.
+
 ## [1.1.0] - 2026-02-04
 
 ### Added

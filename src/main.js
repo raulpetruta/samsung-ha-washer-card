@@ -28,64 +28,56 @@ class SamsungWasherCard extends HTMLElement {
       this.content = this.querySelector(".card-content");
     }
 
-    // Get device name from config - handle both full entity ID and device name
-    let deviceName = this.config.device_name || 'washing_machine';
-    if (deviceName.includes('.')) {
-      // Extract device name from full entity ID (e.g., "select.washing_machine" -> "washing_machine")
-      deviceName = deviceName.split('.').pop();
-    }
-    
-
-    
-    // Get all sensor data
     const sensorData = EntityHelpers.getAllSensorData(hass, this.config);
-    
-    // Format completion time
-    const formattedCompletionTime = Formatters.formatCompletionTime(sensorData.completionTime);
-    
-    // Determine status classes and animations
-    const statusClass = Formatters.getStatusClass(sensorData.machineState);
-    const isRecentlyCompleted = this.isRecentlyCompleted(hass);
-    const animationClass = Formatters.getAnimationClass(sensorData.machineState, isRecentlyCompleted);
-    const statusLightClass = Formatters.getStatusLightClass(sensorData.machineState, isRecentlyCompleted);
+    const activity = Formatters.getActivity(sensorData);
+    const isRecentlyCompleted = this.isRecentlyCompleted(sensorData, activity);
+    const completionSource = sensorData.completionTime
+      || (isRecentlyCompleted ? this._lastFinishTime : null);
+    const formattedCompletionTime = Formatters.formatCompletionTime(completionSource);
 
-    // Format display name and icon
-    // Try to get the friendly name from the main select entity
-    let deviceDisplayName = Formatters.formatDeviceName(deviceName);
-    const mainEntityId = this.config.device_name?.includes('.') ? this.config.device_name : `select.${deviceName}`;
-    
-    if (hass.states[mainEntityId] && hass.states[mainEntityId].attributes.friendly_name) {
-      deviceDisplayName = hass.states[mainEntityId].attributes.friendly_name;
-    }
+    const statusClass = Formatters.getStatusClass(activity, sensorData.machineState, sensorData.progress);
+    const animationClass = Formatters.getAnimationClass(activity, isRecentlyCompleted);
+    const statusLightClass = Formatters.getStatusLightClass(activity, isRecentlyCompleted);
+
+    const legacyName = Formatters.formatDeviceName(EntityHelpers.getLegacyPrefix(this.config) || 'washer');
+    const deviceDisplayName = EntityHelpers.getDisplayName(hass, this.config) || legacyName;
     
     const washerIcon = this.config.icon || '🧺';
     const iconHtml = Formatters.getIconHtml(washerIcon);
 
-    // Prepare data for components
-    // Prepare data for components
     const sensorsGridData = {
       completionTime: formattedCompletionTime,
-      energy: sensorData.energy,
-      waterConsumption: sensorData.waterConsumption,
+      energy: Formatters.formatSensorValue(sensorData.energy),
+      energyUnit: sensorData.energyUnit,
+      waterConsumption: Formatters.formatSensorValue(sensorData.waterConsumption),
+      waterUnit: sensorData.waterUnit,
       powerBinary: sensorData.powerBinary,
-      power: sensorData.power,
-      energySaved: sensorData.energySaved,
-      jobState: sensorData.jobState
+      power: Formatters.formatSensorValue(sensorData.power),
+      powerUnit: sensorData.powerUnit,
+      energySaved: Formatters.formatSensorValue(sensorData.energySaved),
+      energySavedUnit: sensorData.energySavedUnit,
+      jobState: Formatters.formatStage(sensorData.jobState)
     };
 
+    const shown = (key) => this.config[key] !== false;
     const controlsData = {
+      showChildLock: shown('show_child_lock'),
+      showRemoteControl: shown('show_remote_control'),
+      showBubbleSoak: shown('show_bubble_soak'),
+      showDetergent: shown('show_detergent'),
+      showRinseCycles: shown('show_rinse_cycles'),
+      showSpinLevel: shown('show_spin_level'),
+      showWaterTemperature: shown('show_water_temperature'),
       childLock: sensorData.childLock,
       remoteControl: sensorData.remoteControl,
       bubbleSoak: sensorData.bubbleSoak,
       detergentAmount: sensorData.detergentAmount,
       rinseCycles: sensorData.rinseCycles,
-      spinLevel: sensorData.spinLevel
+      spinLevel: Formatters.formatSpin(sensorData.spinLevel),
+      washTemperature: Formatters.formatTemperature(sensorData.washTemperature)
     };
 
-    // Determine status text (Program name or Machine State)
-    const statusText = (sensorData.washerSelect && sensorData.washerSelect !== 'Unknown') 
-      ? sensorData.washerSelect 
-      : sensorData.machineState;
+    const statusText = Formatters.getStatusText(sensorData);
 
     // Render the card
     this.content.innerHTML = `
@@ -112,33 +104,28 @@ class SamsungWasherCard extends HTMLElement {
     `;
   }
 
-  isRecentlyCompleted(hass) {
-    // Get the configured hours (default to 2 hours)
-    const completeStatusHours = this.config.complete_status_for_x_hours || 2;
-    
-    try {
-      // Get device name - handle both full entity ID and device name
-      let deviceName = this.config.device_name || 'washing_machine';
-      if (deviceName.includes('.')) {
-        deviceName = deviceName.split('.').pop();
-      }
-      
-      // Get the raw completion time directly from hass
-      const completionTimeRaw = EntityHelpers.getEntityValue(hass, `sensor.${deviceName}_completion_time`, '');
-      if (!completionTimeRaw || completionTimeRaw === 'Unknown' || completionTimeRaw === 'unavailable') {
-        return false;
-      }
-      
-      const completionDate = new Date(completionTimeRaw);
-      const now = new Date();
-      const diffMs = now.getTime() - completionDate.getTime();
-      const diffHours = diffMs / (1000 * 60 * 60);
-      
-      // If completion was in the past and within the configured hours, show as completed
-      return diffMs > 0 && diffHours <= completeStatusHours;
-    } catch (error) {
-      return false;
-    }
+  isRecentlyCompleted(sensorData, activity) {
+    const now = Date.now();
+    const remembered = Formatters.nextRememberedFinish({
+      live: sensorData.completionTime,
+      remembered: this._lastFinishTime,
+      finishWasLive: this._finishWasLive,
+      activity,
+      now,
+    });
+    this._lastFinishTime = remembered.remembered;
+    this._finishWasLive = remembered.finishWasLive;
+
+    if (activity === 'running' || activity === 'paused') return false;
+    if (Formatters.isFinishedStage(sensorData.progress)) return true;
+
+    const configuredHours = Number(this.config.complete_status_for_x_hours);
+    const hours = Number.isFinite(configuredHours) && configuredHours > 0 ? configuredHours : 2;
+    return Formatters.isWithinCompletionWindow(
+      sensorData.completionTime || this._lastFinishTime,
+      hours,
+      now
+    );
   }
 
   // The user supplied configuration. Throw an exception and Home Assistant
@@ -159,10 +146,10 @@ class SamsungWasherCard extends HTMLElement {
   // The rules for sizing your card in the grid in sections view
   getGridOptions() {
     return {
-      rows: 8,
+      rows: 10,
       columns: 12,
       min_rows: 8,
-      max_rows: 8,
+      max_rows: 12,
       min_columns: 12,
       max_columns: 12,
     };
@@ -170,19 +157,26 @@ class SamsungWasherCard extends HTMLElement {
 
   // Return the stub configuration for the card
   static getStubConfig(hass) {
-    // Try to auto-detect a select entity that looks like a washing machine
     let defaultDeviceName = "";
-    if (hass) {
-      const selectEntities = Object.keys(hass.states).filter(entity => 
-        entity.startsWith('select.') && 
-        (entity.toLowerCase().includes('wash') || 
-         entity.toLowerCase().includes('washer') || 
+    if (hass?.entities) {
+      const localThingsEntity = Object.keys(hass.entities).find((entityId) => {
+        const entry = hass.entities[entityId];
+        const key = entry?.translation_key || '';
+        return entry?.platform === 'localthings' && (
+          key === 'machine_state' || key === 'washer_cycle' || key.startsWith('washer_cycle_')
+        );
+      });
+      if (localThingsEntity) defaultDeviceName = localThingsEntity;
+    }
+
+    if (!defaultDeviceName && hass?.states) {
+      const selectEntities = Object.keys(hass.states).filter((entity) =>
+        entity.startsWith('select.') &&
+        (entity.toLowerCase().includes('wash') ||
+         entity.toLowerCase().includes('washer') ||
          entity.toLowerCase().includes('laundry'))
       );
-      if (selectEntities.length > 0) {
-        // Extract device name from entity ID (e.g., "select.washing_machine" -> "washing_machine")
-        defaultDeviceName = selectEntities[0].split('.')[1];
-      }
+      if (selectEntities.length > 0) defaultDeviceName = selectEntities[0];
     }
     
     return {
@@ -206,9 +200,14 @@ class SamsungWasherCard extends HTMLElement {
           required: true,
           selector: {
             entity: {
-              filter: {
-                domain: "select"
-              }
+              filter: [
+                { domain: "sensor" },
+                { domain: "binary_sensor" },
+                { domain: "switch" },
+                { domain: "select" },
+                { domain: "number" },
+                { domain: "button" }
+              ]
             }
           },
           // This is a workaround to show the current value
@@ -282,6 +281,49 @@ class SamsungWasherCard extends HTMLElement {
           }
         },
         {
+          name: "water_temperature_entity",
+          selector: {
+            entity: {
+              domain: "select"
+            }
+          }
+        },
+        {
+          name: "show_child_lock",
+          default: true,
+          selector: { boolean: {} }
+        },
+        {
+          name: "show_remote_control",
+          default: true,
+          selector: { boolean: {} }
+        },
+        {
+          name: "show_bubble_soak",
+          default: true,
+          selector: { boolean: {} }
+        },
+        {
+          name: "show_detergent",
+          default: true,
+          selector: { boolean: {} }
+        },
+        {
+          name: "show_rinse_cycles",
+          default: true,
+          selector: { boolean: {} }
+        },
+        {
+          name: "show_spin_level",
+          default: true,
+          selector: { boolean: {} }
+        },
+        {
+          name: "show_water_temperature",
+          default: true,
+          selector: { boolean: {} }
+        },
+        {
           name: "icon",
           selector: {
             icon: {}
@@ -302,7 +344,7 @@ class SamsungWasherCard extends HTMLElement {
       ],
       computeLabel: (schema) => {
         const labels = {
-          device_name: "Main Washer Device (Controls & Status)",
+          device_name: "Washer Entity",
           completion_time_entity: "Completion Time Sensor",
           energy_entity: "Energy Sensor",
           water_entity: "Water Consumption Sensor",
@@ -311,6 +353,14 @@ class SamsungWasherCard extends HTMLElement {
           energy_saved_entity: "Energy Saved Sensor",
           job_state_entity: "Job State Sensor",
           program_entity: "Program/Cycle Select",
+          water_temperature_entity: "Water Temperature Select",
+          show_child_lock: "Show Child Lock",
+          show_remote_control: "Show Remote Control",
+          show_bubble_soak: "Show Bubble Soak",
+          show_detergent: "Show Detergent",
+          show_rinse_cycles: "Show Rinse Cycles",
+          show_spin_level: "Show Spin Level",
+          show_water_temperature: "Show Water Temperature",
           icon: "Card Icon",
           complete_status_for_x_hours: "Completed Status Duration"
         };
@@ -318,20 +368,14 @@ class SamsungWasherCard extends HTMLElement {
       },
       computeHelper: (schema) => {
         const helpers = {
-          device_name: "Select your Samsung washing machine control entity",
+          device_name: "Pick any entity from the washer. LocalThings siblings are found automatically.",
           icon: "Icon to display in the card header (emoji or mdi:icon-name)",
-          complete_status_for_x_hours: "Hours to show green 'completed' status after washing is done"
+          complete_status_for_x_hours: "Hours to show green 'completed' status after washing is done",
+          water_temperature_entity: "Optional. LocalThings wash temperature is found automatically.",
+          show_child_lock: "Hide a control by turning its switch off. Hidden controls stay available to the washer."
         };
         return helpers[schema.name];
       },
-      // Transform the entity ID to just the device name when saving
-      getData: (schema, formData) => {
-        if (schema.name === 'device_name' && formData.device_name?.includes('.')) {
-          // Extract device name from full entity ID
-          return formData.device_name.split('.')[1];
-        }
-        return formData[schema.name];
-      }
     };
   }
 }
@@ -344,7 +388,7 @@ window.customCards.push({
   type: "samsung-washer-card",
   name: "Samsung Washer Card",
   preview: true,
-  description: "A modern card for Samsung washing machines with SmartThings integration",
+  description: "A modern card for Samsung washing machines, including LocalThings",
   documentationURL: "https://github.com/raulpetruta/samsung-ha-washer-card",
   configurable: true,
 });

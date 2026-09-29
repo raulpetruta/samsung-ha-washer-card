@@ -41,8 +41,6 @@ export const baseStyles = `
   
   .card-content {
     padding: 16px;
-    overflow-y: auto;
-    max-height: 100%;
   }
 
   .washer-header {
@@ -130,6 +128,10 @@ export const baseStyles = `
   .status-idle {
     background: var(--accent-color, rgb(0, 174, 199));
   }
+
+  .status-paused {
+    background: rgb(176, 122, 74);
+  }
   
   @media (prefers-color-scheme: dark) {
     .status-running {
@@ -140,6 +142,9 @@ export const baseStyles = `
     }
     .status-idle {
       background: rgb(0, 191, 214);
+    }
+    .status-paused {
+      background: rgb(196, 140, 90);
     }
   }
 
